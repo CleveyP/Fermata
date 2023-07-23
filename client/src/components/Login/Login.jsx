@@ -1,12 +1,13 @@
 import {useState} from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
+import { cookies } from "../../App";
 
 export const Login = (props) =>{
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+
     const navigate = useNavigate();
 
 
@@ -21,12 +22,13 @@ export const Login = (props) =>{
 
 
     const handleSubmit = async () =>{
-        console.log(username);
         //make a request to the backend that will ask if the username and password exist in the database of users
-        const res = await axios.post("http://localhost:8080/login", {username: username, password: password});
+        const res = await axios.post("http://localhost:8080/user/login", {username: username, password: password});
         if(res.data.success){
+            //set the username as a cookie
+            cookies.set('username', username);
             //route user to their home page
-            alert(`Your user name was: ${res.data.username}`);
+             navigate("/home");
         }
         else{
             alert("username and password do not match our records.");
