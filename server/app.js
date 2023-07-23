@@ -7,6 +7,7 @@ const bcrypt = require('bcrypt');
 const mongoose = require("mongoose");
 const UsersModel = require("./Models/Users");
 const userRouter = require('./routes/userRoutes');
+const compositionRouter = require('./routes/compositionRoutes');
 connectMongo();
 
 let app = express();
@@ -14,6 +15,7 @@ const router = express.Router();
 app.use(express.json());
 app.use(cors());
 app.use("/user", userRouter);
+app.use("/composition", compositionRouter);
 
 
 

@@ -7,6 +7,3 @@ userRouter.post("/login", login);
 userRouter.post("/register", register);
 
 module.exports = userRouter;
-
-
-module.exports = userRouter;
