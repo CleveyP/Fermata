@@ -40,6 +40,11 @@ const login =  async (req, res) =>{
     //check the database to see if this credential combo matches
     const result = await UsersModel.findOne({username: username});
     console.log(result);
+    if(!result){
+        console.log("user " + username + "does not exist in database");
+        res.send({success: false, username: "user does not exist"});
+        return; //don't know why this is necessary
+    }
     //get the hashed password from that user
     const dbHash = result.password;
     //if the password is correct 
