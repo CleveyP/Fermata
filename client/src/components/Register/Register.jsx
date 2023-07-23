@@ -34,7 +34,7 @@ export const Register = () =>{
 
         //make a request to the backend that will ask if the username and password exist in the database of users
         //if it does not exist, register the new username and password
-        const res = await axios.post("/register", {username: username, password: password});
+        const res = await axios.post("http://localhost:8080/register", {username: username, password: password});
         if(res.data.success){
             //route user to their home page
         }
