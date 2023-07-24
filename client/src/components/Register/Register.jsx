@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { cookies } from "../../App";
+import "./Register.css";
+
 import axios from "axios";
 
 export const Register = () =>{
@@ -53,12 +55,14 @@ export const Register = () =>{
 
     return (
         <div className="register">
-            <h1>Hello, This is Fermata!</h1>
+            <h1>Register</h1>
             <div className="register-form">
            Username:  <input required  value={username} name="username" type="text" onChange={(e) => handleNameChange(e)}/>
            Password: <input required value={password} name="password" type="password" onChange={(e) => handlePasswordChange(e)}/>
            Confirm Password: <input required value={confirmPassword} name="confirm-password" type="password" onChange={(e) => handleConfirmPasswordChange(e)}/>
-           <button onClick={handleCreateAccount}>Create Account</button>
+           <div className="button-div"></div>
+            <button onClick={handleCreateAccount}>Create Account</button>
+            <button onClick={() => {navigate("/")}}>Login</button>
             </div>
         
 

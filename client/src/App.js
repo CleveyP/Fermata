@@ -5,6 +5,7 @@ import { Login } from './components/Login/Login';
 import { Register } from './components/Register/Register';
 import { Home } from './components/Home/Home';
 import {Settings} from "./components/Settings/Settings";
+import { EditComposition } from './components/EditComposition/EditComposition';
 import Cookies from 'universal-cookie';
 
 export const cookies = new Cookies();
@@ -18,8 +19,7 @@ function App() {
                       <Route path="/register" element={<Register/>} /> 
                       <Route path="/home" element={<Home/>} />
                       <Route path="/settings" element={<Settings/>} />
-                      {/* <Route path="/page2" element={<Project />} /> 
-                      <Route path="/page3" element={<Play/>} />  */}
+                      <Route path="/editComposition/:songId" element={<EditComposition/>} />
                   </Routes>
                 </BrowserRouter>
     </div>

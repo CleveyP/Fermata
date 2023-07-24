@@ -2,6 +2,7 @@ import {useState} from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { cookies } from "../../App";
+import "./Login.css";
 
 export const Login = (props) =>{
 
@@ -38,18 +39,25 @@ export const Login = (props) =>{
     }
 
     const handleCreateAccount = () =>{
-        navigate("/register");  //http://localhost:3000/register
+        navigate("/register"); 
     }
 
     return (
         <div className="login">
             <h1>Hello, This is Fermata!</h1>
             <div className="signin-form">
-            <input required  value={username} name="username" type="text" onChange={(e) => handleNameChange(e)}/>
-            <input required value={password} name="password" type="password" onChange={(e) => handlePasswordChange(e)}/>
-            <button onClick={handleSubmit}>Login</button>
+                <label htmlFor="username">Username</label>
+                <input required  value={username} name="username" type="text" onChange={(e) => handleNameChange(e)}/>
+                <label htmlFor="password">Password</label>
+                <input required value={password} name="password" type="password" onChange={(e) => handlePasswordChange(e)}/>
+                <div className="button-div">
+                    <button onClick={handleSubmit}>Login</button>
+                    <button onClick={handleCreateAccount}>Create Account</button>
+                </div>
+               
             </div>
-        <button onClick={handleCreateAccount}>Create Account</button>
+       
+
 
         </div>
     );

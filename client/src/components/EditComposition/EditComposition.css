@@ -1,0 +1,10 @@
+
+
+.edit-composition-container{
+    box-sizing: border-box;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    background-color: white;
+    padding: 10px;
+}

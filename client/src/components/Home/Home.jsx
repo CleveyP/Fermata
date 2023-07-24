@@ -55,6 +55,10 @@ export const Home = () =>{
             })
         //if everything goes as planned
         //navigate to the new view of the new song
+        if(res.data.success){
+           // setIsOpen(false);
+            navigate(`/editComposition/${res.data.songId}`);
+        }
     }
 
     return (
@@ -64,7 +68,7 @@ export const Home = () =>{
                 <h2>Fermata</h2>
                 <p>{username}</p>
                 <button onClick={handleLogout}>Logout</button>
-                <button onClick={() => {navigate(`/settings/`)}}>Settings</button>
+                <button onClick={() => {navigate(`/settings`)}}>Settings</button>
             </header>
             <main>
                 <h1>{`Hello, ${username}!`}</h1>
@@ -96,7 +100,7 @@ export const Home = () =>{
             <option value="68">6/8</option>
             <option value="78">7/8</option>
         </select>
-        <button onClick={handleCreateSong}>Finish</button>
+        <button onClick= {handleCreateSong}>Finish</button>
        </div>
       </Modal>
 

@@ -1,12 +1,12 @@
-.register{
-    background-image: url("https://th.bing.com/th/id/R.6afeec89f075a9a9ad534d6b6f363352?rik=lRNdbR6N4ZgqFA&riu=http%3a%2f%2fwww.clipartbest.com%2fcliparts%2fxig%2fKy4%2fxigKy4n5T.jpeg&ehk=e5hmsS5RgGw131kWAmAqk%2fUfWPBULXUvvDFrMSBvAKA%3d&risl=&pid=ImgRaw&r=0");
+.login{
+    background-image: url("https://cdn10.bigcommerce.com/s-7fcgcq/products/6163/images/4749/Treble_Clef_with_Musical_Notes_-_12x12_Overlay__88667.1505775695.1280.1280.jpg?c=2");
     background-position: center;
     background-size: cover;
     min-height: 100vh;
     width: 100vw;
     overflow-y: hidden;
 }
-.register-form{
+.signin-form{
     padding: 40px;
     border: black 3px solid;
     margin: auto;
@@ -20,7 +20,7 @@
     color: white;
 }
 
-.register-form > input{
+.signin-form > input{
     margin-top: 20px;
     margin-bottom: 20px;
 }

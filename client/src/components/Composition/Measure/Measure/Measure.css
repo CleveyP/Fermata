@@ -1,0 +1,23 @@
+.measure{
+    display: flex;
+    flex-direction: row;
+    border-left: 1px solid black; 
+    border-right: 1px solid black;
+    height: 100%;
+    width: 25%;
+    background-color: white;
+}
+
+.beat{
+    display: flex;
+    flex-direction: column;
+
+}
+
+.note{
+
+}
+
+.note:hover{
+    border: dotted green 1px;
+}
