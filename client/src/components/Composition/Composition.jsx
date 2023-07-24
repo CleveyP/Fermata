@@ -2,14 +2,15 @@ import { useState, useEffect } from "react";
 import "./Composition.css";
 import { Measure } from "./Measure/Measure/Measure";
 
+
+
 export const Composition = (props) =>{
     const [staffs, setStaffs] = useState([]); 
-   
+   const [composition, setComposition] = useState({});
     useEffect(() =>{
         //if this is a new composition:
         if(props.compositionArray.length == 0){
             //populate the trebleStaffs and bass staffs arrays with the number of staffs 
-            console.log("populating new composition");
             let stfs = [];
             for(let i=0; i< props.numMeasures / 4; i++){
                 //create an empty treble and bass staff
@@ -18,8 +19,8 @@ export const Composition = (props) =>{
                 //populate the trebleStaff and bass staff with 4 measures
                 for(let j = 0; j< 4; j++){
                     //allow up to 16th notes
-                    trebleStaff.push(<Measure measureNum= {i*4+j}  clef="treble" numBeats={props.timeSig / 10} beatsArr={[]}/>); //Ex timeSig = 68 ... 68/10 = 6
-                    bassStaff.push(<Measure measureNum= {i*4+j}  clef="bass" numBeats={props.timeSig / 10} beatsArr={[]}/>);
+                    trebleStaff.push(<Measure measureNum= {i*4+j}  clef="treble" numBeats={Math.floor(props.timeSig / 10)} beatsArr={[]}/>); //Ex timeSig = 68 ... 68/10 = 6
+                    bassStaff.push(<Measure measureNum= {i*4+j}  clef="bass" numBeats={Math.floor(props.timeSig / 10)} beatsArr={[]}/>);
 
                 }
                

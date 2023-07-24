@@ -61,6 +61,9 @@ const Note = (props) =>{
     else if(props.note.doesExist){
         //pick the image that matches the note duration
     }
+    else{
+      imgTag  = <img src="/blankNote.jpg" alt="empty line"/>
+    }
      
     return (
         <div className={`note ${props.note.duration} ${props.note.isRest} ${props.note.doesExist} ${props.note.accidental}`}>

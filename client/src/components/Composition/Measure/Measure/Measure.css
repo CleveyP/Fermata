@@ -11,13 +11,21 @@
 .beat{
     display: flex;
     flex-direction: column;
-
+    width:25%;
+    height:100%;
+    margin-bottom: 10px;
+    background-color: white;
 }
 
 .note{
+height: 11%;
+width: 100%;
+}
 
+.note img {
+    width:100%;
 }
 
 .note:hover{
-    border: dotted green 1px;
+    border: dotted red 3px;
 }
