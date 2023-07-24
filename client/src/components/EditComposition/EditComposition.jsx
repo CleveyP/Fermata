@@ -9,8 +9,8 @@ export const EditComposition = () =>{
     const { songId } = useParams();
 
     const [songTitle, setSongTitle] = useState("");
-    const [numBars, setNumBars] = useState(8);
-    const [timeSig, setTimeSig] = useState(44);
+    const [numBars, setNumBars] = useState(8); //these are not getting reset for some reason
+    const [timeSig, setTimeSig] = useState(0);
     const [compositionArr, setCompositionArr] = useState([]); //a composition array is an array of every staff
 
 
@@ -28,8 +28,8 @@ export const EditComposition = () =>{
             }
             else{
                 setSongTitle(res.data.songTitle);
-                setNumBars(res.data.numBars);
-                setTimeSig(res.data.timeSig);
+                setNumBars(Number(res.data.numBars)); //this is NOT UPDATING
+                setTimeSig(Number(res.data.timeSig)); //this is NOT UPDATING
                 setCompositionArr(res.data.compositionArr || []);
             }
         }
@@ -37,6 +37,7 @@ export const EditComposition = () =>{
         getSongData();
 
     }, [songId] );
+
 
 
     return (

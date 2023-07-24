@@ -8,6 +8,8 @@ export const Composition = (props) =>{
     const [staffs, setStaffs] = useState([]); 
    const [composition, setComposition] = useState({});
     useEffect(() =>{
+        console.log("in use effect")
+        console.log("props time sig measure: " + props.timeSig)
         //if this is a new composition:
         if(props.compositionArray.length == 0){
             //populate the trebleStaffs and bass staffs arrays with the number of staffs 
@@ -17,13 +19,14 @@ export const Composition = (props) =>{
                 let trebleStaff = [];
                 let bassStaff = [];
                 //populate the trebleStaff and bass staff with 4 measures
+                
                 for(let j = 0; j< 4; j++){
                     //allow up to 16th notes
                     trebleStaff.push(<Measure measureNum= {i*4+j}  clef="treble" numBeats={Math.floor(props.timeSig / 10)} beatsArr={[]}/>); //Ex timeSig = 68 ... 68/10 = 6
                     bassStaff.push(<Measure measureNum= {i*4+j}  clef="bass" numBeats={Math.floor(props.timeSig / 10)} beatsArr={[]}/>);
 
                 }
-               
+
                 //push the trebleStaff and bass staff into the trebleStaffs and bassStaffs arrays
                 stfs.push(trebleStaff);
                 stfs.push(bassStaff);
@@ -36,8 +39,11 @@ export const Composition = (props) =>{
             setStaffs([...props.compositionArray]);
         }
    
-    }, [])
+    },) 
 
+
+  
+   
     return (
         <div className = "composition" >
             <h1>{props.songTitle}</h1>

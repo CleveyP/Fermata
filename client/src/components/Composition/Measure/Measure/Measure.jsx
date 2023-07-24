@@ -7,7 +7,6 @@ export const Measure = (props) =>{
 
     useEffect( () =>{
         if(beats.length == 0){
-            console.log("in use effect")
             //populate the beats array with all nothings
             let newBeats = [];
             for(let i=0; i< props.numBeats; i++){
@@ -21,7 +20,7 @@ export const Measure = (props) =>{
             }
             setBeats([...newBeats]);
         }
-    }, [])
+    }, [props.numBeats])
 
 
 
