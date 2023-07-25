@@ -29,3 +29,11 @@ width: 100%;
 .note:hover{
     border: dotted red 3px;
 }
+
+.hidden{
+    display: none;
+}
+
+.visible{
+    display: flex;
+}

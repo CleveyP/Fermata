@@ -8,8 +8,6 @@ export const Composition = (props) =>{
     const [staffs, setStaffs] = useState([]); 
    const [composition, setComposition] = useState({});
     useEffect(() =>{
-        console.log("in use effect")
-        console.log("props time sig measure: " + props.timeSig)
         //if this is a new composition:
         if(props.compositionArray.length == 0){
             //populate the trebleStaffs and bass staffs arrays with the number of staffs 
@@ -39,7 +37,7 @@ export const Composition = (props) =>{
             setStaffs([...props.compositionArray]);
         }
    
-    },) 
+    }, [props.timeSig]) 
 
 
   
