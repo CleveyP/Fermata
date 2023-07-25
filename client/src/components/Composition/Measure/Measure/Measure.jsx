@@ -135,6 +135,7 @@ const Note = (props) => {
           <option value="natural">Natural</option>
         </select>
         <button onClick={handleCreateNote}>Create Note</button>
+        <button onClick={() =>{ setShowEditOptions((prevState) => !prevState);}}>X</button>
       </div>
     </div>
   );

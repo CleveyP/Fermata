@@ -31,9 +31,8 @@ const createNewComposition = async (req, res) =>{
 }
 
 const getSongData = async (req, res) =>{
-    console.log("getting song data");
     const songId = req.params.songId;
-    console.log(songId);
+   
     //query database by songId
     //get the song data and return to user
     const songData = await CompositionsModel.findById(songId);
