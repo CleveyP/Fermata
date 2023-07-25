@@ -1,12 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, createContext, useContext } from "react";
 import "./Composition.css";
 import { Measure } from "./Measure/Measure/Measure";
+import {Piece} from "../../Classes/PieceClass";
+import axios from "axios";
 
-
+export const PieceContext = createContext();
 
 export const Composition = (props) =>{
     const [staffs, setStaffs] = useState([]); 
-   const [composition, setComposition] = useState({});
+   const [pieceObject, setPieceObject] = useState(new Piece());
     useEffect(() =>{
         //if this is a new composition:
         if(props.compositionArray.length == 0){
@@ -31,25 +33,49 @@ export const Composition = (props) =>{
             }
             //set the trebleStaffs and bassStaffs stateful vars
             setStaffs([...stfs]);
+            const newPiece = new Piece(props.numMeasures, props.timeSig);
+            setPieceObject({...newPiece});
         }
         //if the composition is already in progress:
         else{
             setStaffs([...props.compositionArray]);
+            const newPiece = new Piece(staffs);
+            setPieceObject({...newPiece});
         }
+        //update the Piece object
+       
    
     }, [props.timeSig]) 
 
 
-  
+  const handleSave = async () =>{
+    //transform the compositionArray into a json array
+    const jsonComposition = JSON.stringify(pieceObject);
+    //post the json array to the backend 
+    const res = await axios.post("/composition/saveComposition", {composition: jsonComposition})
+    //backend will push the json array into the CompositionModel 
+
+    //check if it was a succes
+    if(res.data.success){
+        alert("saved successfully");
+    }
+    else{
+        alert("could not save the composition!");
+    }
+  }
    
     return (
         <div className = "composition" >
             <h1>{props.songTitle}</h1>
-
+            <button onClick={handleSave}>Save</button>
             {
                //map out the staffs
                staffs.map( (staff, index) =>{
-                    return <Staff clef={index%2 == 0 ? "treble" : "bass"} measures={staff} />
+                    return (
+                    <PieceContext.Provider value={pieceObject}>
+                        <Staff clef={index%2 == 0 ? "treble" : "bass"} measures={staff} />
+                    </PieceContext.Provider>
+                    );
                })
             }
 
@@ -61,7 +87,8 @@ export const Composition = (props) =>{
 
 
 const Staff = (props) =>{
-
+    const pieceObject = useContext(PieceContext);  
+    console.log(JSON.stringify(pieceObject));
     return (
 
         <div className={`staff ${props.clef}`}>
