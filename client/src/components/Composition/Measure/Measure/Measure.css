@@ -37,3 +37,8 @@ width: 100%;
 .visible{
     display: flex;
 }
+
+.edit-note-options{
+    position: relative;
+    z-index: 99;
+}

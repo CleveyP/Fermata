@@ -45,8 +45,8 @@ const Beat = (props) => {
 };
 
 const Note = (props) => {
-  const [doesExist, setDoesExist] = useState(props.doesExist);
-  const [pitch, setPitch] = useState(props.pitch);
+  const [doesExist, setDoesExist] = useState(props.note.doesExist);
+  const [pitch, setPitch] = useState(props.note.pitch);
 
   const [noteDuration, setNoteDuration] = useState("quarter");
   const [accidental, setAccidental] = useState("natural");
@@ -56,16 +56,16 @@ const Note = (props) => {
 
   useEffect(() => {
     let imgTag = undefined;
-    if (!props.note.doesExist && props.note.pitch % 2 === 0) {
+    if (!doesExist && pitch % 2 === 0) {
       imgTag = <img src="/horizontalLine.png" alt="empty line" />;
       setNoteImgSrc("/horizontalLine.png");
-    } else if (props.note.doesExist) {
+    } else if (doesExist) {
       let src = "/";
       if (accidental === "flat") src += "flat";
       else if (accidental === "sharp") src += "sharp";
 
       src += noteDuration;
-      src += props.pitch % 2 === 0 ? "Line" : "Space";
+      src += pitch % 2 === 0 ? "Line" : "Space";
       src += ".png";
       setNoteImgSrc(src);
     } else {
@@ -83,12 +83,13 @@ const Note = (props) => {
   };
 
   const handleCreateNote = () => {
+   console.log("the props pitch: " + pitch);
     let src = "/";
     if (accidental === "flat") src += "flat";
     else if (accidental === "sharp") src += "sharp";
 
     src += noteDuration;
-    src += props.pitch % 2 === 0 ? "Line" : "Space";
+    src += Number(pitch) % 2 === 0 ? "Line" : "Space";
     src += ".png";
     setNoteImgSrc(src);
     setDoesExist(true);
@@ -96,6 +97,9 @@ const Note = (props) => {
   };
 
   const handleClick = () => {
+    if(showEditOptions){
+        return;
+    }
     // Toggle the visibility of the popup when the note is clicked
     setShowEditOptions((prevState) => !prevState);
   };
