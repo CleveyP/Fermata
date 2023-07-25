@@ -52,7 +52,7 @@ export const Composition = (props) =>{
     //transform the compositionArray into a json array
     const jsonComposition = JSON.stringify(pieceObject);
     //post the json array to the backend 
-    const res = await axios.post("/composition/saveComposition", {composition: jsonComposition})
+    const res = await axios.post("http://localhost:8080/composition/saveComposition", {composition: jsonComposition, songId: props.songId})
     //backend will push the json array into the CompositionModel 
 
     //check if it was a succes

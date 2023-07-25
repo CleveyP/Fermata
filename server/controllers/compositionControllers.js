@@ -46,4 +46,20 @@ const getSongData = async (req, res) =>{
 }
 
 
-module.exports = {createNewComposition, getSongData}
+const saveComposition = async (req, res) =>{
+  //get the composition json array from req
+  const compositionArray = req.body.composition;
+  //get the songId from req
+  const songId = req.body.songId;
+  //update the compositionModel's jsonArray where  _songId ==  songId 
+  let compToUpdate = await CompositionsModel.findById(songId);
+  if(!compToUpdate){
+    res.send({success: false});
+    return;
+  }
+  compToUpdate.set({compositionArray: compositionArray});
+  await compToUpdate.save();
+}
+
+
+module.exports = {createNewComposition, getSongData, saveComposition}

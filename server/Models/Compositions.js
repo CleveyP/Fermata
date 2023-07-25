@@ -18,6 +18,9 @@ const CompositionsSchema = new Schema({
     author: {
         type: String,
         required: true
+    },
+    compositionArray: {
+        type: Object
     }
 })
 

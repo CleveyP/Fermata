@@ -43,7 +43,7 @@ export const EditComposition = () =>{
     return (
         <div className="edit-composition-container">
             <h1>{songTitle}</h1>
-            <Composition compositionArray={compositionArr} numMeasures={numBars} timeSig={timeSig}/>
+            <Composition compositionArray={compositionArr} numMeasures={numBars} timeSig={timeSig} songId={songId}/>
         </div>
     );
 
