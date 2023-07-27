@@ -71,7 +71,7 @@ const Note = (props) => {
   const [doesExist, setDoesExist] = useState(props.doesExist);
   const [pitch, setPitch] = useState(props.pitch);
   const [noteobj, setNoteObj] = useState({});
-  const [noteDuration, setNoteDuration] = useState("quarter");
+  const [noteDuration, setNoteDuration] = useState(props.duration || "quarter");
   const [accidental, setAccidental] = useState(props.accidental);
   const [noteImgSrc, setNoteImgSrc] = useState(undefined);
   const [showEditOptions, setShowEditOptions] = useState(false);
