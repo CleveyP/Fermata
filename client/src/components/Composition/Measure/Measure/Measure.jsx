@@ -1,57 +1,84 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import "./Measure.css";
-
+import { Piece, Note as NoteObj } from "../../../../Classes/PieceClass";
+import { PieceContext } from "../../Composition";
 
 export const Measure = (props) => {
-  const [beats, setBeats] = useState(props.beatsArr);
+  const [beats, setBeats] = useState([]);
+  const [measureNumber, setMeasureNumber] = useState(0);
+  // useEffect(() => {
+  //   if (beats.length === 0) {
+  //     let newBeats = [];
+  //     for (let i = 0; i < props.numBeats; i++) {
+  //       let beat = [];
+  //       for (let j = 0; j < 9; j++) {
+  //         beat.push({
+  //           doesExist: false,
+  //           duration: 0,
+  //           isRest: false,
+  //           accidental: "natural",
+  //           pitch: j,
+  //         });
+  //       }
+  //       newBeats.push(beat);
+  //     }
+  //     setBeats([...newBeats]);
+  //   }
+  // }, [props.numBeats]);
+  useEffect(() =>{
+    console.log("The beats array is: " + JSON.stringify(beats));
+    setBeats([...props.beatsArray]);
+    setMeasureNumber(props.measureNumber);
+    console.log("measure number: " + measureNumber);
+  }, [])
 
-  useEffect(() => {
-    if (beats.length === 0) {
-      let newBeats = [];
-      for (let i = 0; i < props.numBeats; i++) {
-        let beat = [];
-        for (let j = 0; j < 9; j++) {
-          beat.push({
-            doesExist: false,
-            duration: 0,
-            isRest: false,
-            accidental: "natural",
-            pitch: j,
-          });
-        }
-        newBeats.push(beat);
-      }
-      setBeats([...newBeats]);
-    }
-  }, [props.numBeats]);
+
 
   return (
     <div className="measure">
       {beats.map((beat, index) => {
-        return <Beat noteArr={beat} key={index} />;
+        return (
+          <Beat
+            notesArray={beat.notesArray}
+            key={index}
+            beatNumber={beat.beatNumber}
+            beatId={beat.beatId}
+          />
+        );
       })}
     </div>
   );
 };
 
 const Beat = (props) => {
+  
   return (
     <div className="beat">
-      {props.noteArr.map((note, index) => {
-        return <Note note={note} key={index} />;
+      {props.notesArray.map((note, index) => {
+        return (
+          <Note
+            key={index}
+            noteId={note.id}
+            pitch={note.pitch}
+            accidental={note.accidental}
+            duration={note.duration}
+            isRest={note.isRest}
+            doesExist = {note.doesExist}
+          />
+        );
       })}
     </div>
   );
 };
 
 const Note = (props) => {
-  const [doesExist, setDoesExist] = useState(props.note.doesExist);
-  const [pitch, setPitch] = useState(props.note.pitch);
-
-  const [noteDuration, setNoteDuration] = useState("quarter");
-  const [accidental, setAccidental] = useState("natural");
+  let pieceObject = useContext(PieceContext);
+  const [doesExist, setDoesExist] = useState(props.doesExist);
+  const [pitch, setPitch] = useState(props.pitch);
+  const [noteobj, setNoteObj] = useState({});
+  const [noteDuration, setNoteDuration] = useState(props.duration);
+  const [accidental, setAccidental] = useState(props.accidental);
   const [noteImgSrc, setNoteImgSrc] = useState(undefined);
-
   const [showEditOptions, setShowEditOptions] = useState(false);
 
   useEffect(() => {
@@ -82,8 +109,26 @@ const Note = (props) => {
     setAccidental(e.target.value);
   };
 
+  const updateNote = (id, newNote, piece) => {
+    console.log("id is: " + id);
+    //find which staff it's in
+    const staffNum = Math.floor(id / (9 * piece.beatsPerMeasure * 4)); //9 notes per beat 4 measures in one staff
+    //find out what measure it is in
+    const measureNum = Math.floor(
+      (id - 9 * piece.beatsPerMeasure * 4 * staffNum) /
+        (piece.beatsPerMeasure * 9)
+    );
+    //find which beat it's in
+    const beatNum = (id % (9 * piece.beatsPerMeasure)) % 9;
+    //find the note to change
+    const noteNum = newNote.pitch;
+    console.log("staffNum: " +staffNum +" measureNum: " +measureNum +" beatNum: " +beatNum +" noteNum: " +noteNum);
+
+    //update the note to the new note
+    piece.staffsArray[staffNum].measuresArray[measureNum].beatsArray[beatNum].notesArray[noteNum] = { ...newNote };
+  };
+
   const handleCreateNote = () => {
-   console.log("the props pitch: " + pitch);
     let src = "/";
     if (accidental === "flat") src += "flat";
     else if (accidental === "sharp") src += "sharp";
@@ -94,11 +139,18 @@ const Note = (props) => {
     setNoteImgSrc(src);
     setDoesExist(true);
     setShowEditOptions(false); // Hide the popup after creating the note
+    //update the piece object to reflect the new note
+    updateNote(
+      props.noteId,
+      new NoteObj(pitch, props.noteId, noteDuration, false, accidental, true),
+      pieceObject
+    );
+    //pitch, id, duration, isRest, accidental, doesExist
   };
 
   const handleClick = () => {
-    if(showEditOptions){
-        return;
+    if (showEditOptions) {
+      return;
     }
     // Toggle the visibility of the popup when the note is clicked
     setShowEditOptions((prevState) => !prevState);
@@ -107,13 +159,15 @@ const Note = (props) => {
   return (
     <div
       onClick={handleClick}
-      className={`note ${props.note.duration} ${props.note.isRest} ${
-        props.note.doesExist
-      } ${props.note.accidental}`}
+      className={`note ${props.note.duration} ${props.note.isRest} ${props.note.doesExist} ${props.note.accidental}`}
     >
       <img src={noteImgSrc} alt="note" />
 
-      <div className={`edit-note-options ${showEditOptions ? "visible" : "hidden"}`}>
+      <div
+        className={`edit-note-options ${
+          showEditOptions ? "visible" : "hidden"
+        }`}
+      >
         <select
           name="duration"
           value={noteDuration}
@@ -135,7 +189,13 @@ const Note = (props) => {
           <option value="natural">Natural</option>
         </select>
         <button onClick={handleCreateNote}>Create Note</button>
-        <button onClick={() =>{ setShowEditOptions((prevState) => !prevState);}}>X</button>
+        <button
+          onClick={() => {
+            setShowEditOptions((prevState) => !prevState);
+          }}
+        >
+          X
+        </button>
       </div>
     </div>
   );

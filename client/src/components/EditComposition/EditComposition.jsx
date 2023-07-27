@@ -11,7 +11,7 @@ export const EditComposition = () =>{
     const [songTitle, setSongTitle] = useState("");
     const [numBars, setNumBars] = useState(8); //these are not getting reset for some reason
     const [timeSig, setTimeSig] = useState(0);
-    const [compositionArr, setCompositionArr] = useState([]); //a composition array is an array of every staff
+    const [compositionObj, setCompositionObj] = useState({}); //a composition array is a json array of staves > measures > beats > notes
 
 
     useEffect( () =>{
@@ -28,9 +28,9 @@ export const EditComposition = () =>{
             }
             else{
                 setSongTitle(res.data.songTitle);
-                setNumBars(Number(res.data.numBars)); //this is NOT UPDATING
-                setTimeSig(Number(res.data.timeSig)); //this is NOT UPDATING
-                setCompositionArr(res.data.compositionArr || []);
+                setNumBars(Number(res.data.numBars)); 
+                setTimeSig(Number(res.data.timeSig)); 
+                setCompositionObj(JSON.parse(res.data.compositionArray));
             }
         }
 
@@ -43,7 +43,7 @@ export const EditComposition = () =>{
     return (
         <div className="edit-composition-container">
             <h1>{songTitle}</h1>
-            <Composition compositionArray={compositionArr} numMeasures={numBars} timeSig={timeSig} songId={songId}/>
+            <Composition compositionObj={compositionObj} numMeasures={numBars} timeSig={timeSig} songId={songId}/>
         </div>
     );
 

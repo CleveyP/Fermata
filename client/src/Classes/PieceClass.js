@@ -3,14 +3,14 @@ export class Piece{
    
     constructor(numberOfBars, timeSig){
         this.staffsArray = [];
-        this.beatsPerMeasure = Math.floor(timeSig / 10);
+        this.beatsPerMeasure = Math.floor(timeSig / 10); 
         //fill the staffs array
         if(Array.isArray(numberOfBars))
             this.staffsArray = [...numberOfBars];
         else{
             //it is a new Piece object and it is completely empty
             //fill the staffs array with numberOfBars * 2clefs / 4bars per clef many staff objects
-            for(let i=0; i< numberOfBars*2 / 4; i++){
+            for(let i=0; i< Math.floor(numberOfBars*2 / 4); i++){
                 this.staffsArray.push(new Staff(null, (i%2==0) ? "treble" : "bass", timeSig, i));
             }
         }
@@ -27,26 +27,28 @@ export class Piece{
     //numNotes in One staff = 9*beatsPerMeasure*4    
     //numNotes in one Measure = BeatsPerMeasure  
     //id =  numNotesInOneStaff*(staffNum-1) + (measureNum-1)*numBeats*9 + 9*beatNum + pitch     46 staff 1 beat 2 pitch 2 measure 2
-    updateNote(id, newNote){
+    updateNote(id, newNote, piece){
         //find which staff it's in
-        const staffNum = Math.floor(id / (9*this.beatsPerMeasure*4)); //9 notes per beat 4 measures in one staff
+        const staffNum = Math.floor(id / (9*piece.beatsPerMeasure*4)); //9 notes per beat 4 measures in one staff
         //find out what measure it is in
-        const measureNum = Math.floor((id -  (9*this.beatsPerMeasure*4) * staffNum) / (this.beatsPerMeasure*9));
+        const measureNum = Math.floor((id -  (9*piece.beatsPerMeasure*4) * staffNum) / (piece.beatsPerMeasure*9));
         //find which beat it's in 
-        const beatNum = Math.floor((id - measureNum*this.beatsPerMeasure*4) / 9);
+        const beatNum = (id%(9*piece.beatsPerMeasure)) % 9; 
         //find the note to change
         const noteNum = newNote.pitch;
 
         //update the note to the new note
-        this.staffsArray[staffNum].measuresArray[measureNum].beatsArray[beatNum].notesArray[noteNum] = {...newNote};
+        piece.staffsArray[staffNum].measuresArray[measureNum].beatsArray[beatNum].notesArray[noteNum] = {...newNote};
     }
+
+    //noteNum = 
 
 }
 //a Staff holds 4 measures and is either a bass or treble staff
 class Staff{
     
-    staffNumber;
     constructor(measuresArray, clef, timeSig, staffNumber){ //either measures array or time sig and clef
+        this.staffNumber = staffNumber;
         this.measuresArray = [];
         //fill the staffs array
         if(Array.isArray(measuresArray))
@@ -111,7 +113,7 @@ class Beat{
     }
 }
 //a Note has a duration, whether it is a rest or not, some pitch, some accidental, and it can either exist or not
-class Note{
+export class Note{
 
     constructor(pitch, id, duration, isRest, accidental, doesExist){
         if(doesExist){ //if user provides all arguments
@@ -120,6 +122,7 @@ class Note{
             this.accidental = accidental;
             this.doesExist = doesExist;
             this.pitch = pitch;
+            this.id = id;
         }
 
         else{

@@ -1,6 +1,8 @@
 //everything that the server has to do is right here
 
 let express  = require('express');
+let bodyParser = require('body-parser');
+
 const {connectMongo} = require('./config/mongoConnection');
 const cors = require('cors');
 const bcrypt = require('bcrypt');
@@ -12,7 +14,8 @@ connectMongo();
 
 let app = express();
 const router = express.Router();
-app.use(express.json());
+// app.use(express.json());
+app.use(bodyParser.json({limit: '1mb'}));
 app.use(cors());
 app.use("/user", userRouter);
 app.use("/composition", compositionRouter);

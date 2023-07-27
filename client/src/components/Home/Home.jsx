@@ -4,6 +4,7 @@ import { useNavigate} from "react-router-dom";
 import Modal from 'react-modal';
 import { cookies } from "../../App";
 import axios from "axios";
+import { Piece } from "../../Classes/PieceClass";
 
 
 
@@ -46,13 +47,19 @@ export const Home = () =>{
     }
 
     const handleCreateSong = async () =>{
+        //create a new Piece object
+       const newPiece =  new Piece(numberOfBars, timeSignature);
+       const json = JSON.stringify(newPiece);
+        //JSONStringify the Piece object into a json string
         //send all data to the backend
+
         const res = await axios.post("http://localhost:8080/composition/createNewComposition", {
             songName: songName, 
             numberOfBars: numberOfBars,
             timeSignature: timeSignature,
-            username: username
-            })
+            username: username,
+            compositionArray: json
+    });
         //if everything goes as planned
         //navigate to the new view of the new song
         if(res.data.success){

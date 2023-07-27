@@ -8,6 +8,7 @@ const createNewComposition = async (req, res) =>{
     const numBars = req.body.numberOfBars;
     const timeSig = req.body.timeSignature;
     const username = req.body.username;
+    const compositionArray = req.body.compositionArray;
     console.log(songName, numBars, timeSig);
     //generate new id for the song 
     //put the song in the CompositionModel in the db
@@ -16,7 +17,8 @@ const createNewComposition = async (req, res) =>{
           title: songName,
           numBars: numBars,
           timeSignature: timeSig,
-          author: username 
+          author: username,
+          compositionArray:  compositionArray
         });
         const songId = newComposition._id;
         res.send({success: true, songId: songId});
@@ -36,9 +38,15 @@ const getSongData = async (req, res) =>{
     //query database by songId
     //get the song data and return to user
     const songData = await CompositionsModel.findById(songId);
-    console.log("songData:", songData);
+    
     if(songData){
-        res.send({success: true, songTitle: songData.title, numBars: songData.numBars, timeSig: songData.timeSignature });
+        res.send({
+          success: true,
+          songTitle: songData.title,
+          numBars: songData.numBars,
+          timeSig: songData.timeSignature,
+          compositionArray: songData.compositionArray 
+        });
     }
     else{
         res.send({success:false});
