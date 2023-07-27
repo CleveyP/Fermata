@@ -11,33 +11,9 @@ export const Composition = (props) =>{
    const [pieceObject, setPieceObject] = useState(new Piece());
 
     useEffect(() =>{
-            
-            
             const newPiece = Object.assign(new Piece(props.numMeasures, props.timeSig), props.compositionObj);
             setPieceObject(newPiece);
             setStaffs([...newPiece.staffsArray]);
-            
-    
-            //populate the trebleStaffs and bass staffs arrays with the number of staffs 
-            // let stfs = [];
-            // for(let i=0; i< props.numMeasures / 4; i++){
-            //     //create an empty treble and bass staff
-            //     let trebleStaff = [];
-            //     let bassStaff = [];
-            //     //populate the trebleStaff and bass staff with 4 measures
-                
-            //     for(let j = 0; j< 4; j++){
-            //         //allow up to 16th notes
-            //         trebleStaff.push(<Measure measureNum= {i*4+j}  clef="treble" numBeats={Math.floor(props.timeSig / 10)} beatsArr={[]}/>); //Ex timeSig = 68 ... 68/10 = 6
-            //         bassStaff.push(<Measure measureNum= {i*4+j}  clef="bass" numBeats={Math.floor(props.timeSig / 10)} beatsArr={[]}/>);
-
-            //     }
-
-            //     //push the trebleStaff and bass staff into the trebleStaffs and bassStaffs arrays
-            //     stfs.push(trebleStaff);
-            //     stfs.push(bassStaff);
-            // }
-       
    
     }, [props.timeSig]) 
 
@@ -47,7 +23,6 @@ export const Composition = (props) =>{
     const jsonComposition = JSON.stringify(pieceObject);
     //post the json array to the backend 
     const res = await axios.post("http://localhost:8080/composition/saveComposition", {composition: jsonComposition, songId: props.songId})
-    //backend will push the json array into the CompositionModel 
 
     //check if it was a succes
     if(res.data.success){
@@ -72,8 +47,6 @@ export const Composition = (props) =>{
                     );
                })
             }
-
-
         </div>
     );
 }
@@ -81,15 +54,23 @@ export const Composition = (props) =>{
 
 
 const Staff = (props) =>{ 
+    const [measures, setMeasures] = useState(props.measures);
+
+   
+  useEffect(() => {
+    // Update the measures state whenever props.measures change
+    setMeasures(props.measures);
+  }, [props.measures]);
+      
     return (
 
         <div className={`staff ${props.clef}`}>
             <img className={`clef-image ${props.clef}`} src={props.clef == "treble" ? "/trebleClef.png" : "/bassClef.png"} alt="clef"/>
             {
-                props.measures.map((measure, index) =>{
+                measures.map((measure, index) =>{
                     return (
-                        <Measure beatsArray={measure.beatsArray} measureNumber={measure.measureNumber}/>
-                    )
+                       <Measure beatsArray={measure.beatsArray} measureNumber={measure.measureNumber} index={index}/> 
+                    );
                 })
             }
 
