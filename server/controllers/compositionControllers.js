@@ -61,10 +61,10 @@ const getSongsByUsername = async (req, res) =>{
 
 const authorQuery = { author: username }; 
 
-// Define the fields you want to include in the result
+
 const fieldsToInclude = "_id title";
 
-// Use the .find method to execute the query
+
 const result = await CompositionsModel.find(authorQuery, fieldsToInclude);
   if (!result) {
     console.error("Error executing the query:");

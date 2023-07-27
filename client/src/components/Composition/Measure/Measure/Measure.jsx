@@ -95,10 +95,37 @@ const Note = (props) => {
     }
   }, [noteDuration, accidental]);
 
-
-
-
   const handleNoteDurationChange = (e) => {
+    const newDuration = e.target.value;
+    
+   
+    //need a first eigth note and second eighth note image
+    //if the note is changed to a eigth note then 
+    if(newDuration === "eigth"){
+       setNoteDuration("firstEigth");
+       //reveal the choose second eigth note pitch component
+console.log("inside eigth note handler");
+    //when they select the pitch of the second eigth note then
+    const secondPitch = 5;
+    //place a note with duration "secondEigth" in the same beat as the first eigth at the second eigths pitch by:
+    //if the pitches are the same then setNoteDuration("eigthspair")
+    if(secondPitch === pitch){
+      setNoteDuration("eigthspair");
+      return;
+    }
+    else{
+        //gett the pitch of the first eighth note. find the difference between firstEigthpitch and secondEigthPitch
+        //get second pitch from the modal or whatever lets the user select the second pitch
+       
+        const secondAccidental = "natural";
+        const diff = pitch - secondPitch;
+       //and adding this difference to the first eigth note's id. Then calling updateNote on the newNote and the computed Id and the piece object
+       const secondEigthId = props.noteId + diff;
+       updateNote(secondEigthId, new NoteObj(secondPitch, secondEigthId, "secondEigth", false, secondAccidental, true), pieceObject);
+    }
+  
+    //not sure if this will rerender the second note or if user has to save the piece and refresh the page. 
+    }
     setNoteDuration(e.target.value);
   };
 
