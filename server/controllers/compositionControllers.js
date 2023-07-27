@@ -53,6 +53,28 @@ const getSongData = async (req, res) =>{
     }
 }
 
+const getSongsByUsername = async (req, res) =>{
+  //get the username from the req object
+  const username = req.body.username;
+  console.log("username" + username);
+  //get the compositions titles and songIds that were made by the username user
+
+const authorQuery = { author: username }; 
+
+// Define the fields you want to include in the result
+const fieldsToInclude = "_id title";
+
+// Use the .find method to execute the query
+const result = await CompositionsModel.find(authorQuery, fieldsToInclude);
+  if (!result) {
+    console.error("Error executing the query:");
+    res.send({success: false});
+  } else {
+    console.log("Result:", result);
+    res.send({success: true, songsList: result})
+  }
+}
+
 
 const saveComposition = async (req, res) =>{
   //get the composition json array from req
@@ -70,4 +92,4 @@ const saveComposition = async (req, res) =>{
 }
 
 
-module.exports = {createNewComposition, getSongData, saveComposition}
+module.exports = {createNewComposition, getSongData, saveComposition,  getSongsByUsername}

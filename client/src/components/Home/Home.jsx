@@ -11,6 +11,7 @@ import { Piece } from "../../Classes/PieceClass";
 
 export const Home = () =>{
     const [username, setUsername] = useState("");
+    const [songList, setSongList] = useState([]); //array of { songId: ,  title: }
     const [modalIsOpen, setIsOpen] = useState(false);
     //modal selections
     const [timeSignature, setTimeSignature] = useState("44");
@@ -18,11 +19,23 @@ export const Home = () =>{
     const [numberOfBars, setNumberOfBars] = useState(8);
     const navigate = useNavigate();
 
-
+    //setup the username and the list of their songs
     useEffect(() =>{
-        //get the username from universal cookie
+       
+        //query compositionModel by username and get all of user's compositions
+        const getSongs = async () =>{
+             //get the username from universal cookie
         setUsername(cookies.get("username"));
+            const songList = await axios.post("http://localhost:8080/composition/getSongsByUsername", {username: cookies.get("username")});
+            if(songList.data.success){
+                setSongList(songList.data.songsList);
+            }
+        }
+
+        getSongs();
+        
     }, []);
+
 
 
     const handleLogout = () =>{
@@ -63,7 +76,6 @@ export const Home = () =>{
         //if everything goes as planned
         //navigate to the new view of the new song
         if(res.data.success){
-           // setIsOpen(false);
             navigate(`/editComposition/${res.data.songId}`);
         }
     }
@@ -84,7 +96,7 @@ export const Home = () =>{
                     <button onClick={() => {setIsOpen(true)}}>Create New Composition</button>
                     {/* <CompositionList/> */}
                 </div>
-
+                <SongList songList={songList}/>
                 
             </main>
 
@@ -110,14 +122,43 @@ export const Home = () =>{
         <button onClick= {handleCreateSong}>Finish</button>
        </div>
       </Modal>
-
-
              {/* //-----------------------------------------------------END MODAL------------------------------------------------------------ */}
-
 
         </div>
 
     );
 
 
+}
+
+const SongList = (props) =>{
+    const navigate = useNavigate();
+
+    //switch user to the edit view of the song that they clicked
+    const handleClick = async (e) =>{
+        //get the songId of the clicked song
+        const songId = e.currentTarget.getAttribute('songId');
+        console.log("the clicked song's id is: " + songId);
+        
+        //navigate to the editComposition component using the song's id
+        navigate(`/editComposition/${songId}`);
+    }
+
+
+    return (
+        <div className = "songs-list">
+            {
+                props.songList.map((song) =>{
+                    console.log(song._id);
+                    return (
+                    <div className = "song-item" songId={song._id} onClick={(e) => {handleClick(e)}}>
+                        <p>{song.title}</p>
+                    </div>
+                    );
+                })
+            }
+
+
+        </div>
+    )
 }

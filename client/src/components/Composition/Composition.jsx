@@ -69,7 +69,7 @@ const Staff = (props) =>{
             {
                 measures.map((measure, index) =>{
                     return (
-                       <Measure beatsArray={measure.beatsArray} measureNumber={measure.measureNumber} index={index}/> 
+                       <Measure beatsArray={measure.beatsArray} measureNumber={measure.measureNumber} key={index}/> 
                     );
                 })
             }
