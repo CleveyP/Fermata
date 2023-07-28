@@ -88,7 +88,10 @@ const saveComposition = async (req, res) =>{
     return;
   }
   compToUpdate.set({compositionArray: compositionArray});
-  await compToUpdate.save();
+ const saveResult =  await compToUpdate.save();
+ if(saveResult)
+   res.send({success: true});
+ res.send({success: false});
 }
 
 

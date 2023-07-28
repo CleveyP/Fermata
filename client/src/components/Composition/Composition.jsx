@@ -1,4 +1,5 @@
 import { useState, useEffect, createContext, useContext } from "react";
+import {useNavigate} from "react-router-dom";
 import "./Composition.css";
 import { Measure } from "./Measure/Measure/Measure";
 import {Piece} from "../../Classes/PieceClass";
@@ -7,6 +8,8 @@ import axios from "axios";
 export const PieceContext = createContext();
 
 export const Composition = (props) =>{
+
+    const navigate = useNavigate();
     const [staffs, setStaffs] = useState([]); 
    const [pieceObject, setPieceObject] = useState(new Piece());
 
@@ -26,9 +29,11 @@ export const Composition = (props) =>{
 
     //check if it was a succes
     if(res.data.success){
+        console.log("successfully saved the composition!");
         alert("saved successfully");
     }
     else{
+        console.log("failed to save the composition");
         alert("could not save the composition!");
     }
   }
@@ -36,7 +41,11 @@ export const Composition = (props) =>{
     return (
         <div className = "composition" >
             <h1>{props.songTitle}</h1>
+            <div className="composition-control-btns">
             <button onClick={handleSave}>Save</button>
+            <button onClick={() =>{navigate("/home") }}>Home</button>
+            </div>
+            
             {
                //map out the staffs
                staffs.map( (staff, index) =>{
