@@ -21,3 +21,17 @@ img{
     height: 100%;
     width: 60px;
 }
+
+.music-controls{
+    margin: auto;
+    width: 30%;
+    border: 5px solid white;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+
+.bpm-box{
+    display: flex;
+}

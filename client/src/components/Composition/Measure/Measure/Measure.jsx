@@ -67,7 +67,7 @@ const Beat = (props) => {
 };
 
 const Note = (props) => {
-  let pieceObject = useContext(PieceContext);
+  let {pieceObject, setPieceObject} = useContext(PieceContext);
   const [doesExist, setDoesExist] = useState(props.doesExist);
   const [pitch, setPitch] = useState(props.pitch);
   const [noteobj, setNoteObj] = useState({});
@@ -118,6 +118,9 @@ const Note = (props) => {
 
     //update the note to the new note
     piece.staffsArray[staffNum].measuresArray[measureNum].beatsArray[beatNum].notesArray[noteNum] = { ...newNote };
+    //update the state of the pieceObject
+    setPieceObject({...piece});
+
   };
 
   const handleCreateNote = () => {

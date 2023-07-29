@@ -91,6 +91,7 @@ const saveComposition = async (req, res) =>{
  const saveResult =  await compToUpdate.save();
  if(saveResult)
    res.send({success: true});
+else
  res.send({success: false});
 }
 

@@ -4,21 +4,30 @@ import "./Composition.css";
 import { Measure } from "./Measure/Measure/Measure";
 import {Piece} from "../../Classes/PieceClass";
 import axios from "axios";
+import { playSong } from "../../playSong";
 
-export const PieceContext = createContext();
+export const PieceContext = createContext({
+    pieceObject: {},
+    setPieceObject: () => {}
+});
 
 export const Composition = (props) =>{
 
     const navigate = useNavigate();
     const [staffs, setStaffs] = useState([]); 
-   const [pieceObject, setPieceObject] = useState(new Piece());
-
+   const [pieceObject, setPieceObject] = useState(new Piece(props.numMeasures, props.timeSig));
+   const [bpm, setBpm] = useState("120");
+   let value = {pieceObject, setPieceObject};
     useEffect(() =>{
             const newPiece = Object.assign(new Piece(props.numMeasures, props.timeSig), props.compositionObj);
             setPieceObject(newPiece);
             setStaffs([...newPiece.staffsArray]);
    
     }, [props.timeSig]) 
+
+    const handleBpmChange = (e) =>{
+        setBpm(e.target.value);
+    }
 
 
   const handleSave = async () =>{
@@ -44,13 +53,21 @@ export const Composition = (props) =>{
             <div className="composition-control-btns">
             <button onClick={handleSave}>Save</button>
             <button onClick={() =>{navigate("/home") }}>Home</button>
+            <div className="music-controls">
+                <button onClick={() => { playSong(pieceObject, Number(bpm))}}>Play</button>
+                <div className="bpm-box">
+                <input type="range" min="50" max="500" step="1" value={bpm} onChange = {handleBpmChange}/>
+                <p>{`BPM: ${bpm}`}</p>
+                </div>
+              
+            </div>
             </div>
             
             {
                //map out the staffs
                staffs.map( (staff, index) =>{
                     return (
-                    <PieceContext.Provider value={pieceObject}>
+                    <PieceContext.Provider value={value}>
                         <Staff clef={staff.clef} measures={staff.measuresArray} timeSig={staff.timeSig} staffNumber={staff.staffNumber} key={index}/>
                     </PieceContext.Provider>
                     );

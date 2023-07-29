@@ -146,7 +146,9 @@ const SongList = (props) =>{
 
 
     return (
-        <div className = "songs-list">
+        <div className = "song-list">
+            <h1>Your Songs:</h1>
+            <div className="songs-list">
             {
                 props.songList.map((song) =>{
                     console.log(song._id);
@@ -157,6 +159,7 @@ const SongList = (props) =>{
                     );
                 })
             }
+            </div>
 
 
         </div>

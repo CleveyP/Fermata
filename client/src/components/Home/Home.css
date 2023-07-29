@@ -1,0 +1,12 @@
+.songs-list{height: 70%;
+border-width: medium;
+border-style: groove;
+margin-left: 30%;
+margin-right: 30%;
+margin-top: 5%;
+overflow-y: scroll;
+}
+
+main{
+    height: 70vh;
+}
