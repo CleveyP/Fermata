@@ -247,12 +247,53 @@ export const getNotesArrays = (composition, bpm) => {
   return ret;
 };
 
-//take in the trebleChords and bassChords and play these chords in order
-export const playSong = (composition, bpm, trebleSynth, bassSynth) => {
+//take in teh composition and apply the tempo, syths and effects. Play the composition.
+export const playSong = (composition, bpm, trebleSynth, bassSynth, effectsArrays) => {
     const beatTime = (60 / bpm );
     const res = getNotesArrays(composition, bpm);
     const trebleArray = res[0];
     const bassArray = res[1];
+
+    //get the effects on the treble that the user picks
+    let trebleEffects = [];
+    let bassEffects = [];
+    //get all the effects for treble out of the effects array and put them in the treble array
+    for(let i =0; i< effectsArrays[0].length; i++){
+        //create the effect object
+        let effect;
+        switch(effectsArrays[0][i]){
+            case "distortion":
+                effect = new Tone.Distortion(0.5).toDestination();
+                break;
+            case "feedbackDelay":
+                effect = new Tone.FeedbackDelay("8n", 0.5).toDestination();
+                break;
+            case "chorus":
+                effect  = new Tone.Chorus(4, 2.5, 0.5).toDestination().start();
+                break;
+        }
+        trebleEffects.push(effect);
+    }
+     //get all the effects for treble out of the effects array and put them in the treble array
+     for(let i =0; i< effectsArrays[1].length; i++){
+        //create the effect object
+        let effect;
+        switch(effectsArrays[1][i]){
+            case "distortion":
+                effect = new Tone.Distortion(0.5).toDestination();
+                break;
+            case "feedbackDelay":
+                effect = new Tone.FeedbackDelay("8n", 0.5).toDestination();
+                break;
+            case "chorus":
+                effect  = new Tone.Chorus(4, 2.5, 0.5).toDestination().start();
+                break;
+        }
+        bassEffects.push(effect);
+    }
+   
+   
+
 
 
     let treblePoly;
@@ -261,7 +302,7 @@ export const playSong = (composition, bpm, trebleSynth, bassSynth) => {
     //the type of synth depends on the 3rd and 4th args
     switch(trebleSynth){
         case "FM":
-            treblePoly = new Tone.PolySynth( Tone.FMSynth).toDestination();
+            treblePoly = new Tone.PolySynth(Tone.FMSynth).toDestination();
             break;
         case "AM":
             treblePoly = new Tone.PolySynth( Tone.AMSynth).toDestination();
@@ -280,6 +321,15 @@ export const playSong = (composition, bpm, trebleSynth, bassSynth) => {
         case "SYNTH":
             bassPoly = new Tone.PolySynth( Tone.Synth).toDestination();
             break;
+       
+    }
+
+    //apply the effects to the synths
+    for(let effect=0; effect< trebleEffects.length; effect++){
+        treblePoly.connect(trebleEffects[effect]);
+    }
+    for(let effect=0; effect< bassEffects.length; effect++){
+        bassPoly.connect(bassEffects[effect]);
     }
 
   
