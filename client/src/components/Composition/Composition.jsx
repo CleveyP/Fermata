@@ -17,6 +17,8 @@ export const Composition = (props) =>{
     const [staffs, setStaffs] = useState([]); 
    const [pieceObject, setPieceObject] = useState(new Piece(props.numMeasures, props.timeSig));
    const [bpm, setBpm] = useState("120");
+   const [trebleSynth, setTrebleSynth] = useState("FM");
+   const [bassSynth, setBassSynth] = useState("FM");
    let value = {pieceObject, setPieceObject};
     useEffect(() =>{
             const newPiece = Object.assign(new Piece(props.numMeasures, props.timeSig), props.compositionObj);
@@ -54,11 +56,25 @@ export const Composition = (props) =>{
             <button onClick={handleSave}>Save</button>
             <button onClick={() =>{navigate("/home") }}>Home</button>
             <div className="music-controls">
-                <button onClick={() => { playSong(pieceObject, Number(bpm))}}>Play</button>
+                <button onClick={() => { playSong(pieceObject, Number(bpm), trebleSynth, bassSynth)}}>Play</button>
                 <div className="bpm-box">
-                <input type="range" min="50" max="500" step="1" value={bpm} onChange = {handleBpmChange}/>
-                <p>{`BPM: ${bpm}`}</p>
+                    <p>{`BPM: ${bpm}`}</p>
+                    <input type="range" min="50" max="500" step="1" value={bpm} onChange = {handleBpmChange}/>
                 </div>
+                <label htmlFor="treble-synth">Treble Synth Effect</label>
+                <select name="treble-synth" value={trebleSynth} onChange = {(e) => setTrebleSynth(e.target.value) }>
+                    <option value="FM">FM</option>
+                    <option value="SYNTH">SYNTH</option>
+                    <option value="AM">AM</option>
+                </select>
+                <label htmlFor="bass-synth">Bass Synth Effect</label>
+                <select name="bass-synth" value={bassSynth} onChange = {(e) => setBassSynth(e.target.value) }>
+                    <option value="FM">FM</option>
+                    <option value="SYNTH">SYNTH</option>
+                    <option value="AM">AM</option>
+                </select>
+                
+               
               
             </div>
             </div>

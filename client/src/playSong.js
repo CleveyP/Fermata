@@ -149,31 +149,31 @@ export const getNotesArrays = (composition, bpm) => {
             let pitchDuration = {};
           switch (Number(note.pitch)) {
             case 0:
-              pitchDuration.pitch = "F5";
+              pitchDuration.pitch = "A4";
               break;
             case 1:
-              pitchDuration.pitch = "E5";
+              pitchDuration.pitch = "G3";
               break;
             case 2:
-              pitchDuration.pitch = "D5";
+              pitchDuration.pitch = "F3";
               break;
             case 3:
-              pitchDuration.pitch = "C5";
+              pitchDuration.pitch = "E3";
               break;
             case 4:
-              pitchDuration.pitch = "B5";
+              pitchDuration.pitch = "D3";
               break;
             case 5:
-              pitchDuration.pitch = "A5";
+              pitchDuration.pitch = "C3";
               break;
             case 6:
-              pitchDuration.pitch = "G4";
+              pitchDuration.pitch = "B3";
               break;
             case 7:
-              pitchDuration.pitch = "F4";
+              pitchDuration.pitch = "A2";
               break;
             case 8:
-              pitchDuration.pitch = "E4";
+              pitchDuration.pitch = "G2";
               break;
             default:
                 pitchDuration.pitch = "A0";
@@ -241,8 +241,6 @@ export const getNotesArrays = (composition, bpm) => {
     }
   }
 
-
-  console.log(JSON.stringify(trebleChordsArray));
   let ret = [];
   ret.push(trebleChordsArray);
   ret.push(bassChordsArray);
@@ -250,16 +248,41 @@ export const getNotesArrays = (composition, bpm) => {
 };
 
 //take in the trebleChords and bassChords and play these chords in order
-export const playSong = (composition, bpm) => {
+export const playSong = (composition, bpm, trebleSynth, bassSynth) => {
     const beatTime = (60 / bpm );
     const res = getNotesArrays(composition, bpm);
     const trebleArray = res[0];
     const bassArray = res[1];
-    console.log(JSON.stringify(trebleArray));
 
-    //create two poly synths capable of playing multiple notes at the same time and mount them to the client's speakers
-  const bassPoly = new Tone.PolySynth( Tone.FMSynth).toDestination();
-  const treblePoly = new Tone.PolySynth( Tone.Synth).toDestination();
+
+    let treblePoly;
+    let bassPoly;
+    //create two poly synths capable of playing multiple notes at the same time and mount them to the client's speakers 
+    //the type of synth depends on the 3rd and 4th args
+    switch(trebleSynth){
+        case "FM":
+            treblePoly = new Tone.PolySynth( Tone.FMSynth).toDestination();
+            break;
+        case "AM":
+            treblePoly = new Tone.PolySynth( Tone.AMSynth).toDestination();
+            break;
+        case "SYNTH":
+            treblePoly = new Tone.PolySynth( Tone.Synth).toDestination();
+            break;
+    }
+    switch(bassSynth){
+        case "FM":
+            bassPoly = new Tone.PolySynth( Tone.FMSynth).toDestination();
+            break;
+        case "AM":
+            bassPoly = new Tone.PolySynth( Tone.AMSynth).toDestination();
+            break;
+        case "SYNTH":
+            bassPoly = new Tone.PolySynth( Tone.Synth).toDestination();
+            break;
+    }
+
+  
     //loop through the treble array and for each beat (chord) that contains notes, trigger every note in the chord with its pitch duration and startTime
     //offset that is the offset from the start of the beat
    

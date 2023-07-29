@@ -24,11 +24,16 @@ img{
 
 .music-controls{
     margin: auto;
-    width: 30%;
+    width: 80%;
     border: 5px solid white;
     display: flex;
     justify-content: space-evenly;
     align-items: center;
+}
+
+.music-controls select{
+    height: 40px;
+    width: 100px;
 }
 
 
