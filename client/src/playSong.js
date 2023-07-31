@@ -338,6 +338,10 @@ export const playSong = (composition, bpm, trebleSynth, bassSynth, effectsArrays
         bassPoly.connect(bassEffects[effect]);
     }
 
+    //let each synth be able to play 9 notes simultaniously
+    treblePoly.maxPolyphony = 9;
+    bassPoly.maxPolyphony = 9;
+
   
     //loop through the treble array and for each beat (chord) that contains notes, trigger every note in the chord with its pitch duration and startTime
     //offset that is the offset from the start of the beat
@@ -356,6 +360,22 @@ export const playSong = (composition, bpm, trebleSynth, bassSynth, effectsArrays
             bassPoly.triggerAttackRelease(bassArray[chord][note].pitch, bassArray[chord][note].duration, bassArray[chord][note].startTime + now + chord*beatTime);
         }
     }
+
+    //TODO: see if it is possible to use Tone.Part so as to syncronize the Tone to the Transport object which would give ability to pause and start
+    //over
+
+    // let chord = 0;
+    // var treblePart = new Tone.Part(function(time, value){
+    //     //the value is an object which contains both the note and the velocity
+
+    //     for(let note = 0; note < trebleArray[chord].length; note++){
+    //         treblePoly.triggerAttackRelease(trebleArray[chord][note].pitch, trebleArray[chord][note].duration, trebleArray[chord][note].startTime + now + chord*beatTime);
+    //     }
+    //     chord++;
+    // }, trebleArray).start(0);
+
+
+
 }
 
 
