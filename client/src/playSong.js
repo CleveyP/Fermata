@@ -6,7 +6,7 @@ export const getNotesArrays = (composition, bpm) => {
     //bpm = numberOfbeats/ 60s 
     //one beat takes 60/bpm seconds 
     const beatTime = (60 / bpm );
-
+    console.log("the composition time sig is: " +composition.timeSig);
   //loop through the composition, staff by staff creating a bass array and a treble array
   //where each element in the array is an array of pitchDuration objects
   const trebleChordsArray = []; //[{startTime: , value: [ {pitch: 'C4' , duration: fr1} ]}, {startTime: , value: [ {pitch: , duration: } ]} ]
@@ -79,7 +79,8 @@ export const getNotesArrays = (composition, bpm) => {
           //get the durations of each note object and convert them to fractions of 1 where 1 is a whole measure
           switch(note.duration){
             case "whole":
-                pitchDuration.duration = beatTime* (composition.timeSig % 10);
+                pitchDuration.duration = beatTime* Math.floor(Number(composition.timeSig) / 10);
+                console.log(composition.timeSig)
                 pitchDuration.startTime = 0;
                 break;
             case "dottedHalf":
@@ -188,7 +189,7 @@ export const getNotesArrays = (composition, bpm) => {
           console.log(note.duration);
           switch(note.duration){
             case "whole":
-                pitchDuration.duration = beatTime* (composition.timeSig % 10);
+                pitchDuration.duration = beatTime* Math.floor(Number(composition.timeSig) / 10);
                 pitchDuration.startTime = 0;
                 break;
             case "dottedHalf":

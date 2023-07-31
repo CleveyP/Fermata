@@ -80,7 +80,7 @@ export const Composition = (props) =>{
             <button onClick={handleSave}>Save</button>
             <button onClick={() =>{navigate("/home") }}>Home</button>
             <div className="music-controls">
-                <button onClick={() => { playSong(pieceObject, Number(bpm), trebleSynth, bassSynth, [trebleEffects, []])}}>Play</button>
+                <button onClick={() => { playSong(pieceObject, Number(bpm), trebleSynth, bassSynth, [trebleEffects, bassEffects])}}>Play</button>
                 <div className="bpm-box">
                     <p>{`BPM: ${bpm}`}</p>
                     <input type="range" min="50" max="500" step="1" value={bpm} onChange = {handleBpmChange}/>

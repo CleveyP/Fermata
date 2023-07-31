@@ -3,6 +3,7 @@ export class Piece{
    
     constructor(numberOfBars, timeSig){
         this.staffsArray = [];
+        this.timeSig = timeSig;
         this.beatsPerMeasure = Math.floor(timeSig / 10); 
         //fill the staffs array
         if(Array.isArray(numberOfBars))
