@@ -92,7 +92,7 @@ const Note = (props) => {
     } else {
       setNoteImgSrc("/blankNote.jpg");
     }
-  }, [noteDuration, accidental]);
+  }, [noteDuration, accidental, doesExist]);
 
   const handleNoteDurationChange = (e) => {
    
@@ -104,7 +104,6 @@ const Note = (props) => {
   };
 
   const updateNote = (id, newNote, piece) => {
-    console.log("id is: " + id);
     //find which staff it's in
     const staffNum = Math.floor(id / (9 * piece.beatsPerMeasure * 4)); //9 notes per beat 4 measures in one staff
     //find out what measure of the staff it is in
@@ -122,6 +121,20 @@ const Note = (props) => {
     setPieceObject({...piece});
 
   };
+
+  const handleDelete = () =>{
+    let src = "/";
+    setNoteImgSrc(src);
+    setDoesExist(false);
+    setShowEditOptions(false); // Hide the popup after creating the note
+    //update the piece object to reflect the new note
+    updateNote(
+      props.noteId,
+      new NoteObj(pitch, props.noteId, noteDuration, false, "natural", false),
+     pieceObject
+    );
+    //pitch, id, duration, isRest, accidental, doesExist
+  }
 
   const handleCreateNote = () => {
     let src = "/";
@@ -186,7 +199,7 @@ const Note = (props) => {
           <option value="flat">Flat</option>
           <option value="natural">Natural</option>
         </select>
-
+        <button onClick={handleDelete}>Delete</button>
 
         <button onClick={handleCreateNote}>Create Note</button>
         <button

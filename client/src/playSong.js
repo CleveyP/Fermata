@@ -6,8 +6,6 @@ export const getNotesArrays = (composition, bpm) => {
     //bpm = numberOfbeats/ 60s 
     //one beat takes 60/bpm seconds 
     const beatTime = (60 / bpm );
-    console.log(beatTime);
-    console.log(bpm);
 
   //loop through the composition, staff by staff creating a bass array and a treble array
   //where each element in the array is an array of pitchDuration objects
@@ -78,9 +76,7 @@ export const getNotesArrays = (composition, bpm) => {
             accidental+= "#";
           }
           pitchDuration.pitch = pitchDuration.pitch.slice(0, 1) + accidental + pitchDuration.pitch.slice(1);
-          console.log("pitch found for note : " + note.pitch + " is: " + pitchDuration.pitch );
           //get the durations of each note object and convert them to fractions of 1 where 1 is a whole measure
-          console.log(note.duration);
           switch(note.duration){
             case "whole":
                 pitchDuration.duration = beatTime* (composition.timeSig % 10);
@@ -188,7 +184,7 @@ export const getNotesArrays = (composition, bpm) => {
           }
           pitchDuration.pitch = pitchDuration.pitch.slice(0, 1) + accidental + pitchDuration.pitch.slice(1);
           console.log("pitch found for note : " + note.pitch + " is: " + pitchDuration.pitch );
-          //get the durations of each note object and convert them to fractions of 1 where 1 is a whole measure
+          //get the durations of each note object and convert them to fractions of one beat where beatTime is the time in seconds for one beat
           console.log(note.duration);
           switch(note.duration){
             case "whole":
@@ -232,16 +228,16 @@ export const getNotesArrays = (composition, bpm) => {
                 console.log("something weird happened when getting note's duration.");
           }
           //the pitchDuration object is complete at this point. 
-          console.log(pitchDuration.duration);
           return pitchDuration;
         });
-          //push pitchDurations chord into the array of treble notes to play
+          //push pitchDurations chord into the array of bass chords to play
           bassChordsArray.push(chord);
       }
     }
   }
 
   let ret = [];
+  //return the treble chords and bass chords arrays
   ret.push(trebleChordsArray);
   ret.push(bassChordsArray);
   return ret;
@@ -249,7 +245,7 @@ export const getNotesArrays = (composition, bpm) => {
 
 //take in teh composition and apply the tempo, syths and effects. Play the composition.
 export const playSong = (composition, bpm, trebleSynth, bassSynth, effectsArrays) => {
-    const beatTime = (60 / bpm );
+    const beatTime = (60 / bpm ); //get the time in seconds of one beat
     const res = getNotesArrays(composition, bpm);
     const trebleArray = res[0];
     const bassArray = res[1];
@@ -274,7 +270,7 @@ export const playSong = (composition, bpm, trebleSynth, bassSynth, effectsArrays
         }
         trebleEffects.push(effect);
     }
-     //get all the effects for treble out of the effects array and put them in the treble array
+     //get all the effects for bass out of the effects array and put them in the effects array
      for(let i =0; i< effectsArrays[1].length; i++){
         //create the effect object
         let effect;
@@ -299,10 +295,11 @@ export const playSong = (composition, bpm, trebleSynth, bassSynth, effectsArrays
     let treblePoly;
     let bassPoly;
     //create two poly synths capable of playing multiple notes at the same time and mount them to the client's speakers 
-    //the type of synth depends on the 3rd and 4th args
+    //the type of synth depends on the 3rd and 4th args to playSong function
     switch(trebleSynth){
         case "FM":
             treblePoly = new Tone.PolySynth(Tone.FMSynth).toDestination();
+            treblePoly.set( { oscillator : {type : "sine"}});
             break;
         case "AM":
             treblePoly = new Tone.PolySynth( Tone.AMSynth).toDestination();
