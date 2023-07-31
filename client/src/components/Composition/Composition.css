@@ -24,11 +24,13 @@ img{
 
 .music-controls{
     margin: auto;
-    width: 80%;
+    height: fit-content;
+    width: 95%;
     border: 5px solid white;
     display: flex;
     justify-content: space-evenly;
     align-items: center;
+    background-color: darkred;
 }
 
 .music-controls select{
@@ -36,6 +38,24 @@ img{
     width: 100px;
 }
 
+.synth-controls{
+    display: flex;
+    width: 30%;
+    border: solid black 3px;
+    padding: 10px;
+    background-color: burlywood;
+}
+
+.effects-container{
+    background-color: burlywood;
+    border: 3px solid black;
+    padding: 10px;
+}
+
+.effects-box{
+    display: flex;
+    border: 3px solid black;
+}
 
 .bpm-box{
     display: flex;

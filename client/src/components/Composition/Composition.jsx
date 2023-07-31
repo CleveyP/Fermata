@@ -1,199 +1,235 @@
 import { useState, useEffect, createContext, useContext } from "react";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "./Composition.css";
 import { Measure } from "./Measure/Measure/Measure";
-import {Piece} from "../../Classes/PieceClass";
+import { Piece } from "../../Classes/PieceClass";
 import axios from "axios";
 import { playSong } from "../../playSong";
 
 export const PieceContext = createContext({
-    pieceObject: {},
-    setPieceObject: () => {}
+  pieceObject: {},
+  setPieceObject: () => {},
 });
 
-export const Composition = (props) =>{
+export const Composition = (props) => {
+  const navigate = useNavigate();
+  const [staffs, setStaffs] = useState([]);
+  const [pieceObject, setPieceObject] = useState(
+    new Piece(props.numMeasures, props.timeSig)
+  );
+  const [bpm, setBpm] = useState("120");
+  const [trebleSynth, setTrebleSynth] = useState("FM");
+  const [bassSynth, setBassSynth] = useState("FM");
+  const [trebleEffects, setTrebleEffects] = useState([]);
+  const [bassEffects, setBassEffects] = useState([]);
+  const effectOptions = [
+    "distortion",
+    "chorus",
+    "LFO",
+    "feedbackDelay",
+    "bitCrusher",
+  ];
+  let value = { pieceObject, setPieceObject };
+  useEffect(() => {
+    const newPiece = Object.assign(
+      new Piece(props.numMeasures, props.timeSig),
+      props.compositionObj
+    );
+    setPieceObject(newPiece);
+    setStaffs([...newPiece.staffsArray]);
+  }, [props.timeSig]);
 
-    const navigate = useNavigate();
-    const [staffs, setStaffs] = useState([]); 
-   const [pieceObject, setPieceObject] = useState(new Piece(props.numMeasures, props.timeSig));
-   const [bpm, setBpm] = useState("120");
-   const [trebleSynth, setTrebleSynth] = useState("FM");
-   const [bassSynth, setBassSynth] = useState("FM");
-   const [trebleEffects, setTrebleEffects] = useState([]);
-   const [bassEffects, setBassEffects] = useState([]);
-   const effectOptions = ["distortion", "chorus"];
-   let value = {pieceObject, setPieceObject};
-    useEffect(() =>{
-            const newPiece = Object.assign(new Piece(props.numMeasures, props.timeSig), props.compositionObj);
-            setPieceObject(newPiece);
-            setStaffs([...newPiece.staffsArray]);
-   
-    }, [props.timeSig]) 
+  const handleBpmChange = (e) => {
+    setBpm(e.target.value);
+  };
 
-    const handleBpmChange = (e) =>{
-        setBpm(e.target.value);
+  const handleCheckboxChange = (event, clef) => {
+    const { name, checked } = event.target;
+    if (clef === "treble") {
+      setTrebleEffects((prevCheckedItems) =>
+        checked
+          ? [...prevCheckedItems, name]
+          : prevCheckedItems.filter((item) => item !== name)
+      );
+    } else {
+      setBassEffects((prevCheckedItems) =>
+        checked
+          ? [...prevCheckedItems, name]
+          : prevCheckedItems.filter((item) => item !== name)
+      );
     }
+  };
 
-
-    const handleCheckboxChange = (event, clef) => {
-        const { name, checked } = event.target;
-        if(clef === "treble"){
-        setTrebleEffects((prevCheckedItems) =>
-          checked
-            ? [...prevCheckedItems, name]
-            : prevCheckedItems.filter((item) => item !== name)
-        );
-        }
-        else{
-            setBassEffects((prevCheckedItems) =>
-            checked
-              ? [...prevCheckedItems, name]
-              : prevCheckedItems.filter((item) => item !== name)
-          );
-          }
-        }
-    
-
-    
-
-  const handleSave = async () =>{
+  const handleSave = async () => {
     //transform the compositionArray into a json array
     const jsonComposition = JSON.stringify(pieceObject);
-    //post the json array to the backend 
-    const res = await axios.post("http://localhost:8080/composition/saveComposition", {composition: jsonComposition, songId: props.songId})
+    //post the json array to the backend
+    const res = await axios.post(
+      "http://localhost:8080/composition/saveComposition",
+      { composition: jsonComposition, songId: props.songId }
+    );
 
     //check if it was a succes
-    if(res.data.success){
-        console.log("successfully saved the composition!");
-        alert("saved successfully");
+    if (res.data.success) {
+      console.log("successfully saved the composition!");
+      alert("saved successfully");
+    } else {
+      console.log("failed to save the composition");
+      alert("could not save the composition!");
     }
-    else{
-        console.log("failed to save the composition");
-        alert("could not save the composition!");
-    }
-  }
-   
-    return (
-        <div className = "composition" >
-            <h1>{props.songTitle}</h1>
-            <div className="composition-control-btns">
-            <button onClick={handleSave}>Save</button>
-            <button onClick={() =>{navigate("/home") }}>Home</button>
-            <div className="music-controls">
-                <button onClick={() => { playSong(pieceObject, Number(bpm), trebleSynth, bassSynth, [trebleEffects, bassEffects])}}>Play</button>
-                <div className="bpm-box">
-                    <p>{`BPM: ${bpm}`}</p>
-                    <input type="range" min="50" max="500" step="1" value={bpm} onChange = {handleBpmChange}/>
-                </div>
-                <div className="treble-controls">
-                    <label htmlFor="treble-synth">Treble Synth Effect</label>
-                    <select name="treble-synth" value={trebleSynth} onChange = {(e) => setTrebleSynth(e.target.value) }>
-                        <option value="FM">FM</option>
-                        <option value="SYNTH">SYNTH</option>
-                        <option value="AM">AM</option>
-                    </select>
+  };
 
-                   {/* treble effects checkboxes */}
-                   <div className="treble-effects-container">
-                   <h2>Treble Effects</h2>
-                    {effectOptions.map((option) => (
-        <div key={option}>
-          <label>
-            <input
-              type="checkbox"
-              name={option}
-              checked={trebleEffects.includes(option)}
-              onChange={e => handleCheckboxChange(e, "treble")}
-            />
-            {option}
-          </label>
+  return (
+    <div className="composition">
+      <h1>{props.songTitle}</h1>
+      <div className="composition-control-btns">
+        <button onClick={handleSave}>Save</button>
+        <button
+          onClick={() => {
+            navigate("/home");
+          }}
+        >
+          Home
+        </button>
         </div>
-      ))}
-    </div>
-         {/* bass effects checkboxes */}
-         <h2>Bass Effects</h2>
-         <div className="bass-effects-container">
-         {effectOptions.map((option) => (
-        <div key={option}>
-          <label>
+        <div className="music-controls">
+          <button
+            onClick={() => {
+              playSong(pieceObject, Number(bpm), trebleSynth, bassSynth, [
+                trebleEffects,
+                bassEffects,
+              ]);
+            }}
+          >
+            Play
+          </button>
+          <div className="bpm-box">
+            <p>{`BPM: ${bpm}`}</p>
             <input
-              type="checkbox"
-              name={option}
-              checked={bassEffects.includes(option)}
-              onChange={e => handleCheckboxChange(e, "bass")}
+              type="range"
+              min="50"
+              max="500"
+              step="1"
+              value={bpm}
+              onChange={handleBpmChange}
             />
-            {option}
-          </label>
-        </div>
-      ))}
-    </div>
-
-
-
-
-
-
-                </div>
+          </div>
+          <div className="synth-controls">
+            <div className="treble-controls">
+              <label htmlFor="treble-synth">Treble Synth Effect</label>
+              <select
+                name="treble-synth"
+                value={trebleSynth}
+                onChange={(e) => setTrebleSynth(e.target.value)}
+              >
+                <option value="FM">FM</option>
+                <option value="SYNTH">SYNTH</option>
+                <option value="AM">AM</option>
+              </select>
+              </div>
+              <div className="bass-controls">
                 <label htmlFor="bass-synth">Bass Synth Effect</label>
-                <select name="bass-synth" value={bassSynth} onChange = {(e) => setBassSynth(e.target.value) }>
-                    <option value="FM">FM</option>
-                    <option value="SYNTH">SYNTH</option>
-                    <option value="AM">AM</option>
+                <select
+                  name="bass-synth"
+                  value={bassSynth}
+                  onChange={(e) => setBassSynth(e.target.value)}
+                >
+                  <option value="FM">FM</option>
+                  <option value="SYNTH">SYNTH</option>
+                  <option value="AM">AM</option>
                 </select>
-                
-               
-              
+              </div>
             </div>
+            <div className="effects-box">
+              {/* treble effects checkboxes */}
+              <div className="treble effects-container">
+                <h2>Treble Effects</h2>
+                {effectOptions.map((option) => (
+                  <div key={option}>
+                    <label>
+                      <input
+                        type="checkbox"
+                        name={option}
+                        checked={trebleEffects.includes(option)}
+                        onChange={(e) => handleCheckboxChange(e, "treble")}
+                      />
+                      {option}
+                    </label>
+                  </div>
+                ))}
+              </div>
+              {/* bass effects checkboxes */}
+
+              <div className="bass effects-container">
+                <h2>Bass Effects</h2>
+                {effectOptions.map((option) => (
+                  <div key={option}>
+                    <label>
+                      <input
+                        type="checkbox"
+                        name={option}
+                        checked={bassEffects.includes(option)}
+                        onChange={(e) => handleCheckboxChange(e, "bass")}
+                      />
+                      {option}
+                    </label>
+                  </div>
+                ))}
+              </div>
             </div>
-            
-            {
-               //map out the staffs
-               staffs.map( (staff, index) =>{
-                    return (
-                    <PieceContext.Provider value={value}>
-                        <Staff clef={staff.clef} measures={staff.measuresArray} timeSig={staff.timeSig} staffNumber={staff.staffNumber} key={index}/>
-                    </PieceContext.Provider>
-                    );
-               })
-            }
-        </div>
-    );
-}
+          </div>
 
+      {
+        //map out the staffs
+        staffs.map((staff, index) => {
+          return (
+            <PieceContext.Provider value={value}>
+              <Staff
+                clef={staff.clef}
+                measures={staff.measuresArray}
+                timeSig={staff.timeSig}
+                staffNumber={staff.staffNumber}
+                key={index}
+              />
+            </PieceContext.Provider>
+          );
+        })
+      }
+    </div>
+  );
+};
 
+const Staff = (props) => {
+  const [measures, setMeasures] = useState(props.measures);
 
-const Staff = (props) =>{ 
-    const [measures, setMeasures] = useState(props.measures);
-
-   
   useEffect(() => {
     // Update the measures state whenever props.measures change
     setMeasures(props.measures);
   }, [props.measures]);
-      
-    return (
 
-        <div className={`staff ${props.clef}`}>
-            <img className={`clef-image ${props.clef}`} src={props.clef == "treble" ? "/trebleClef.png" : "/bassClef.png"} alt="clef"/>
-            {
-                measures.map((measure, index) =>{
-                    return (
-                       <Measure beatsArray={measure.beatsArray} measureNumber={measure.measureNumber} key={index}/> 
-                    );
-                })
-            }
+  return (
+    <div className={`staff ${props.clef}`}>
+      <img
+        className={`clef-image ${props.clef}`}
+        src={props.clef == "treble" ? "/trebleClef.png" : "/bassClef.png"}
+        alt="clef"
+      />
+      {measures.map((measure, index) => {
+        return (
+          <Measure
+            beatsArray={measure.beatsArray}
+            measureNumber={measure.measureNumber}
+            key={index}
+          />
+        );
+      })}
+    </div>
+  );
+};
 
-
-        </div>
-    )
-}
-
-
-
-
-
-
-{/* <input type="checkbox"  name="chorus-effect" value="chorus" onClick={ e => handleTrebleEffectClick(e)}/>
+{
+  /* <input type="checkbox"  name="chorus-effect" value="chorus" onClick={ e => handleTrebleEffectClick(e)}/>
 <label htmlFor="chorus-effect">Chorus</label>
 <input type="checkbox" name="distortion-effect" value="distortion" onClick={e => handleTrebleEffectClick(e)}/>
-<label htmlFor="distortion-effect">Distortion</label> */}
+<label htmlFor="distortion-effect">Distortion</label> */
+}

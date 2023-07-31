@@ -6,7 +6,6 @@ export const getNotesArrays = (composition, bpm) => {
     //bpm = numberOfbeats/ 60s 
     //one beat takes 60/bpm seconds 
     const beatTime = (60 / bpm );
-    console.log("the composition time sig is: " +composition.timeSig);
   //loop through the composition, staff by staff creating a bass array and a treble array
   //where each element in the array is an array of pitchDuration objects
   const trebleChordsArray = []; //[{startTime: , value: [ {pitch: 'C4' , duration: fr1} ]}, {startTime: , value: [ {pitch: , duration: } ]} ]
@@ -186,10 +185,9 @@ export const getNotesArrays = (composition, bpm) => {
           pitchDuration.pitch = pitchDuration.pitch.slice(0, 1) + accidental + pitchDuration.pitch.slice(1);
           console.log("pitch found for note : " + note.pitch + " is: " + pitchDuration.pitch );
           //get the durations of each note object and convert them to fractions of one beat where beatTime is the time in seconds for one beat
-          console.log(note.duration);
           switch(note.duration){
             case "whole":
-                pitchDuration.duration = beatTime* Math.floor(Number(composition.timeSig) / 10);
+                pitchDuration.duration = beatTime* Math.floor(Number(composition.timeSig) / 10); //whole note plays for whole duration of measure
                 pitchDuration.startTime = 0;
                 break;
             case "dottedHalf":
@@ -268,6 +266,11 @@ export const playSong = (composition, bpm, trebleSynth, bassSynth, effectsArrays
             case "chorus":
                 effect  = new Tone.Chorus(4, 2.5, 0.5).toDestination().start();
                 break;
+            case "LFO":
+                effect = new Tone.AutoFilter("8n").toDestination().start();
+                break;
+            case "bitCrusher":
+                effect = new Tone.BitCrusher(4).toDestination();
         }
         trebleEffects.push(effect);
     }
@@ -285,6 +288,11 @@ export const playSong = (composition, bpm, trebleSynth, bassSynth, effectsArrays
             case "chorus":
                 effect  = new Tone.Chorus(4, 2.5, 0.5).toDestination().start();
                 break;
+            case "LFO":
+                effect = new Tone.AutoFilter("8n").toDestination().start();
+                break;
+            case "bitCrusher":
+                effect = new Tone.BitCrusher(4).toDestination();
         }
         bassEffects.push(effect);
     }
