@@ -316,6 +316,22 @@ export const playSong = (composition, bpm, trebleSynth, bassSynth, effectsArrays
         case "SYNTH":
             treblePoly = new Tone.PolySynth( Tone.Synth).toDestination();
             break;
+        case "MONO":
+            treblePoly = new Tone.PolySynth(Tone.MonoSynth).toDestination();
+            break;
+        case "DUO":
+                const duoSynth = new Tone.DuoSynth({
+                    harmonicity: 1.5,
+                    voice0: {
+                      oscillator: { type: 'sawtooth' },
+                      envelope: { attack: 0.1, decay: 0.2, sustain: 0.5, release: 0.8 },
+                    },
+                    voice1: {
+                      oscillator: { type: 'sine' },
+                      envelope: { attack: 0.2, decay: 0.3, sustain: 0.4, release: 0.6 },
+                    },
+                  }).toDestination();
+                  treblePoly = new Tone.PolySynth({synth: duoSynth}).toDestination();
     }
     switch(bassSynth){
         case "FM":
@@ -327,6 +343,22 @@ export const playSong = (composition, bpm, trebleSynth, bassSynth, effectsArrays
         case "SYNTH":
             bassPoly = new Tone.PolySynth( Tone.Synth).toDestination();
             break;
+        case "MONO":
+            bassPoly = new Tone.PolySynth(Tone.MonoSynth).toDestination();
+            break;
+        case "DUO":
+            const duoSynth = new Tone.DuoSynth({
+                harmonicity: 1.5,
+                voice0: {
+                  oscillator: { type: 'sawtooth' },
+                  envelope: { attack: 0.1, decay: 0.2, sustain: 0.5, release: 0.8 },
+                },
+                voice1: {
+                  oscillator: { type: 'sine' },
+                  envelope: { attack: 0.2, decay: 0.3, sustain: 0.4, release: 0.6 },
+                },
+              }).toDestination();
+              bassPoly = new Tone.PolySynth({synth: duoSynth}).toDestination();
        
     }
 
