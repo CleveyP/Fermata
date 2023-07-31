@@ -49,10 +49,10 @@ export const getNotesArrays = (composition, bpm) => {
               pitchDuration.pitch = "C5";
               break;
             case 4:
-              pitchDuration.pitch = "B5";
+              pitchDuration.pitch = "B4";
               break;
             case 5:
-              pitchDuration.pitch = "A5";
+              pitchDuration.pitch = "A4";
               break;
             case 6:
               pitchDuration.pitch = "G4";
@@ -145,7 +145,7 @@ export const getNotesArrays = (composition, bpm) => {
             let pitchDuration = {};
           switch (Number(note.pitch)) {
             case 0:
-              pitchDuration.pitch = "A4";
+              pitchDuration.pitch = "A3";
               break;
             case 1:
               pitchDuration.pitch = "G3";
@@ -163,7 +163,7 @@ export const getNotesArrays = (composition, bpm) => {
               pitchDuration.pitch = "C3";
               break;
             case 6:
-              pitchDuration.pitch = "B3";
+              pitchDuration.pitch = "B2";
               break;
             case 7:
               pitchDuration.pitch = "A2";
