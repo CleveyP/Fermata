@@ -45,7 +45,14 @@ const getSongData = async (req, res) =>{
           songTitle: songData.title,
           numBars: songData.numBars,
           timeSig: songData.timeSignature,
-          compositionArray: songData.compositionArray 
+          compositionArray: songData.compositionArray,
+          bpm: songData.bpm,
+          trebleSynth: songData.trebleSynth,
+          bassSynth: songData.bassSynth,
+          trebleEffects: songData.trebleEffects,
+          bassEffects: songData.bassEffects,
+          trebleVolume: songData.trebleVolume,
+          bassVolume: songData.bassVolume
         });
     }
     else{
@@ -88,6 +95,15 @@ const saveComposition = async (req, res) =>{
     return;
   }
   compToUpdate.set({compositionArray: compositionArray});
+  compToUpdate.set({
+    bpm: req.body.bpm,
+    trebleSynth: req.body.trebleSynth,
+    bassSynth: req.body.bassSynth,
+    trebleVolume: req.body.trebleVolume,
+    bassVolume: req.body.bassVolume,
+    trebleEffects: req.body.trebleEffects,
+    bassEffects: req.body.bassEffects 
+  });
  const saveResult =  await compToUpdate.save();
  if(saveResult)
    res.send({success: true});

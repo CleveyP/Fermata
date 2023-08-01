@@ -6,8 +6,9 @@ export class Piece{
         this.timeSig = timeSig;
         this.beatsPerMeasure = Math.floor(timeSig / 10); 
         //fill the staffs array
-        if(Array.isArray(numberOfBars))
+        if(Array.isArray(numberOfBars)){
             this.staffsArray = [...numberOfBars];
+        }
         else{
             //it is a new Piece object and it is completely empty
             //fill the staffs array with numberOfBars * 2clefs / 4bars per clef many staff objects

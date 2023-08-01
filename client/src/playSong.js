@@ -314,7 +314,39 @@ export const playSong = (composition, bpm, trebleSynth, bassSynth, effectsArrays
             treblePoly = new Tone.PolySynth( Tone.AMSynth).toDestination();
             break;
         case "SYNTH":
-            treblePoly = new Tone.PolySynth( Tone.Synth).toDestination();
+           
+            const newSynth = new Tone.Synth({
+                "volume": 0,
+                "detune": 0,
+                "portamento": 0,
+                "envelope": {
+                    "attack": 0.5,
+                    "attackCurve": "exponential",
+                    "decay": 1,
+                    "decayCurve": "exponential",
+                    "release": 2,
+                    "releaseCurve": "exponential",
+                    "sustain": 0.5
+                },
+                "oscillator": {
+                    "partialCount": 10,
+                    "partials": [
+                        0.007236810378086416,
+                        0,
+                        0.030140817901234556,
+                        0,
+                        0.012345679012345685,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "phase": 10,
+                    "type": "custom"
+                }
+            });
+            treblePoly = new Tone.PolySynth( {synth: newSynth}).toDestination();
             break;
         case "MONO":
             treblePoly = new Tone.PolySynth(Tone.MonoSynth).toDestination();
@@ -332,6 +364,7 @@ export const playSong = (composition, bpm, trebleSynth, bassSynth, effectsArrays
                     },
                   }).toDestination();
                   treblePoly = new Tone.PolySynth({synth: duoSynth}).toDestination();
+                  break;
     }
     switch(bassSynth){
         case "FM":
@@ -341,7 +374,38 @@ export const playSong = (composition, bpm, trebleSynth, bassSynth, effectsArrays
             bassPoly = new Tone.PolySynth( Tone.AMSynth).toDestination();
             break;
         case "SYNTH":
-            bassPoly = new Tone.PolySynth( Tone.Synth).toDestination();
+            const newSynth = new Tone.Synth({
+                "volume": 0,
+                "detune": 0,
+                "portamento": 0,
+                "envelope": {
+                    "attack": 3,
+                    "attackCurve": "exponential",
+                    "decay": 1,
+                    "decayCurve": "exponential",
+                    "release": 2,
+                    "releaseCurve": "exponential",
+                    "sustain": 0.5
+                },
+                "oscillator": {
+                    "partialCount": 10,
+                    "partials": [
+                        0.007236810378086416,
+                        0,
+                        0.030140817901234556,
+                        0,
+                        0.012345679012345685,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                    ],
+                    "phase": 10,
+                    "type": "custom"
+                }
+            });
+            bassPoly = new Tone.PolySynth( {synth: newSynth}).toDestination();
             break;
         case "MONO":
             bassPoly = new Tone.PolySynth(Tone.MonoSynth).toDestination();
@@ -350,7 +414,7 @@ export const playSong = (composition, bpm, trebleSynth, bassSynth, effectsArrays
             const duoSynth = new Tone.DuoSynth({
                 harmonicity: 1.5,
                 voice0: {
-                  oscillator: { type: 'sawtooth' },
+                  oscillator: { type: 'sine' },
                   envelope: { attack: 0.1, decay: 0.2, sustain: 0.5, release: 0.8 },
                 },
                 voice1: {
@@ -359,7 +423,7 @@ export const playSong = (composition, bpm, trebleSynth, bassSynth, effectsArrays
                 },
               }).toDestination();
               bassPoly = new Tone.PolySynth({synth: duoSynth}).toDestination();
-       
+              break;
     }
 
     //apply the equalizer to the synths

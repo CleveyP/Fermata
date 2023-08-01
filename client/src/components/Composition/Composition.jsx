@@ -17,13 +17,15 @@ export const Composition = (props) => {
   const [pieceObject, setPieceObject] = useState(
     new Piece(props.numMeasures, props.timeSig)
   );
-  const [bpm, setBpm] = useState("120");
-  const [trebleSynth, setTrebleSynth] = useState("FM");
-  const [bassSynth, setBassSynth] = useState("FM");
-  const [trebleVolume, setTrebleVolume] = useState(10);  
-  const [bassVolume, setBassVolume] = useState(10);
-  const [trebleEffects, setTrebleEffects] = useState([]);
-  const [bassEffects, setBassEffects] = useState([]);
+  const [bpm, setBpm] = useState(props.optionsObj.bpm || 120);    
+  const [trebleSynth, setTrebleSynth] = useState(props.optionsObj.trebleSynth || "FM");
+  const [bassSynth, setBassSynth] = useState(props.optionsObj.BassSynth || "FM");
+  const [trebleVolume, setTrebleVolume] = useState(props.optionsObj.trebleVolume || 0);  
+  const [bassVolume, setBassVolume] = useState(props.optionsObj.bassVolume || 0);
+  const [trebleEffects, setTrebleEffects] = useState(props.optionsObj.trebleEffects || []);
+  const [bassEffects, setBassEffects] = useState(props.optionsObj.bassEffects || []);
+ 
+
   const effectOptions = [
     "distortion",
     "chorus",
@@ -31,15 +33,25 @@ export const Composition = (props) => {
     "feedbackDelay",
     "bitCrusher",
   ];
+
   let value = { pieceObject, setPieceObject };
+
   useEffect(() => {
     const newPiece = Object.assign(
       new Piece(props.numMeasures, props.timeSig),
       props.compositionObj
     );
     setPieceObject(newPiece);
+    setBpm(props.optionsObj.bpm)
+    setTrebleSynth(props.optionsObj.trebleSynth)
+    setBassSynth(props.optionsObj.bassSynth)
+    setTrebleVolume(props.optionsObj.trebleVolume)
+    setBassVolume(props.optionsObj.bassVolume)
+    setTrebleEffects(props.optionsObj.trebleEffects || [])
+    setBassEffects(props.optionsObj.bassEffects || [])
     setStaffs([...newPiece.staffsArray]);
-  }, [props.timeSig]);
+
+  }, [props.timeSig, props.bassEffects, props.trebleEffects]);
 
   const handleBpmChange = (e) => {
     setBpm(e.target.value);
@@ -68,7 +80,17 @@ export const Composition = (props) => {
     //post the json array to the backend
     const res = await axios.post(
       "http://localhost:8080/composition/saveComposition",
-      { composition: jsonComposition, songId: props.songId }
+      { 
+        composition: jsonComposition,
+        songId: props.songId,
+        bpm: bpm,
+        trebleSynth: trebleSynth,
+        bassSynth: bassSynth,
+        trebleVolume: trebleVolume,
+        bassVolume: bassVolume,
+        trebleEffects: trebleEffects,
+        bassEffects: bassEffects 
+    }
     );
 
     //check if it was a succes
@@ -132,7 +154,7 @@ export const Composition = (props) => {
               </select>
               <div className="treble-vol-box">
                 <label htmlFor="treble-volume">Treble Volume: {trebleVolume}</label>
-                <input name="treble-volume" type="range" min={0} max={20} step={1}  value={trebleVolume} onChange={(e) => setTrebleVolume(e.target.value)} />
+                <input name="treble-volume" type="range" min={-10} max={10} step={1}  value={trebleVolume} onChange={(e) => setTrebleVolume(e.target.value)} />
               </div>
               </div>
               <div className="bass-controls">
@@ -150,7 +172,7 @@ export const Composition = (props) => {
                 </select>
                 <div className="bass-vol-box">
                   <label htmlFor="bass-volume">Bass Volume: {bassVolume}</label>
-                  <input name="bass-volume" type="range" min={0} max={20} step={1}  value={bassVolume} onChange={(e) => setBassVolume(e.target.value)} />
+                  <input name="bass-volume" type="range" min={-10} max={10} step={1}  value={bassVolume} onChange={(e) => setBassVolume(e.target.value)} />
               </div>
               </div>
             </div>

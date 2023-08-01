@@ -12,7 +12,7 @@ export const EditComposition = () =>{
     const [numBars, setNumBars] = useState(8); //these are not getting reset for some reason
     const [timeSig, setTimeSig] = useState(0);
     const [compositionObj, setCompositionObj] = useState({}); //a composition array is a json array of staves > measures > beats > notes
-
+    const [optionsObj, setOptionsObj] = useState({})
 
     useEffect( () =>{
         if(!songId){
@@ -30,6 +30,17 @@ export const EditComposition = () =>{
                 setSongTitle(res.data.songTitle);
                 setNumBars(Number(res.data.numBars)); 
                 setTimeSig(Number(res.data.timeSig)); 
+                //create an options object and set the state to it
+                let newOptions = {
+                    bpm: res.data.bpm,
+                    trebleSynth: res.data.trebleSynth,
+                    bassSynth: res.data.bassSynth,
+                    trebleEffects: res.data.trebleEffects,
+                    bassEffects: res.data.bassEffects,
+                    trebleVolume: res.data.trebleVolume,
+                    bassVolume: res.data.bassVolume
+                };
+                setOptionsObj({...newOptions});
                 setCompositionObj(JSON.parse(res.data.compositionArray));
             }
         }
@@ -43,7 +54,7 @@ export const EditComposition = () =>{
     return (
         <div className="edit-composition-container">
             <h1>{songTitle}</h1>
-            <Composition compositionObj={compositionObj} numMeasures={numBars} timeSig={timeSig} songId={songId}/>
+            <Composition compositionObj={compositionObj} numMeasures={numBars} timeSig={timeSig} songId={songId} optionsObj={optionsObj}/>
         </div>
     );
 
