@@ -20,6 +20,8 @@ export const Composition = (props) => {
   const [bpm, setBpm] = useState("120");
   const [trebleSynth, setTrebleSynth] = useState("FM");
   const [bassSynth, setBassSynth] = useState("FM");
+  const [trebleVolume, setTrebleVolume] = useState(10);  
+  const [bassVolume, setBassVolume] = useState(10);
   const [trebleEffects, setTrebleEffects] = useState([]);
   const [bassEffects, setBassEffects] = useState([]);
   const effectOptions = [
@@ -98,7 +100,7 @@ export const Composition = (props) => {
               playSong(pieceObject, Number(bpm), trebleSynth, bassSynth, [
                 trebleEffects,
                 bassEffects,
-              ]);
+              ], [trebleVolume, bassVolume]);
             }}
           >
             Play
@@ -128,6 +130,10 @@ export const Composition = (props) => {
                 <option value="MONO">MONO</option>
                 <option value="DUO">DUO</option>
               </select>
+              <div className="treble-vol-box">
+                <label htmlFor="treble-volume">Treble Volume: {trebleVolume}</label>
+                <input name="treble-volume" type="range" min={0} max={20} step={1}  value={trebleVolume} onChange={(e) => setTrebleVolume(e.target.value)} />
+              </div>
               </div>
               <div className="bass-controls">
                 <label htmlFor="bass-synth">Bass Synth Effect</label>
@@ -142,6 +148,10 @@ export const Composition = (props) => {
                   <option value="MONO">MONO</option>
                   <option value="DUO">DUO</option>
                 </select>
+                <div className="bass-vol-box">
+                  <label htmlFor="bass-volume">Bass Volume: {bassVolume}</label>
+                  <input name="bass-volume" type="range" min={0} max={20} step={1}  value={bassVolume} onChange={(e) => setBassVolume(e.target.value)} />
+              </div>
               </div>
             </div>
             <div className="effects-box">

@@ -243,7 +243,7 @@ export const getNotesArrays = (composition, bpm) => {
 };
 
 //take in teh composition and apply the tempo, syths and effects. Play the composition.
-export const playSong = (composition, bpm, trebleSynth, bassSynth, effectsArrays) => {
+export const playSong = (composition, bpm, trebleSynth, bassSynth, effectsArrays, eq) => {
     const beatTime = (60 / bpm ); //get the time in seconds of one beat
     const res = getNotesArrays(composition, bpm);
     const trebleArray = res[0];
@@ -361,6 +361,10 @@ export const playSong = (composition, bpm, trebleSynth, bassSynth, effectsArrays
               bassPoly = new Tone.PolySynth({synth: duoSynth}).toDestination();
        
     }
+
+    //apply the equalizer to the synths
+    treblePoly.volume.value = eq[0];
+    bassPoly.volume.value = eq[1];
 
     //apply the effects to the synths
     for(let effect=0; effect< trebleEffects.length; effect++){
