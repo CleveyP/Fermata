@@ -1,5 +1,12 @@
 import * as Tone from "tone";
 
+
+
+let currentChordIndex = 0;
+let scheduledEvents = [];
+let now = 0;
+
+
 //create an array of notes to be played out of the composition array
 export const getNotesArrays = (composition, bpm) => {
     //calculate the speed in seconds of each beat
@@ -119,7 +126,6 @@ export const getNotesArrays = (composition, bpm) => {
                 console.log("something weird happened when getting note's duration.");
           }
           //the pitchDuration object is complete at this point. 
-          console.log(pitchDuration.duration);
           return pitchDuration;
         });
           //push pitchDurations chord into the array of treble notes to play
@@ -183,7 +189,7 @@ export const getNotesArrays = (composition, bpm) => {
             accidental+= "#";
           }
           pitchDuration.pitch = pitchDuration.pitch.slice(0, 1) + accidental + pitchDuration.pitch.slice(1);
-          console.log("pitch found for note : " + note.pitch + " is: " + pitchDuration.pitch );
+          // console.log("pitch found for note : " + note.pitch + " is: " + pitchDuration.pitch );
           //get the durations of each note object and convert them to fractions of one beat where beatTime is the time in seconds for one beat
           switch(note.duration){
             case "whole":
@@ -245,7 +251,7 @@ export const getNotesArrays = (composition, bpm) => {
 //take in teh composition and apply the tempo, syths and effects. Play the composition.
 export const playSong = (composition, bpm, trebleSynth, bassSynth, effectsArrays, eq) => {
     const beatTime = (60 / bpm ); //get the time in seconds of one beat
-    const res = getNotesArrays(composition, bpm);
+    const res = getNotesArrays(composition, bpm);  // [[note 1 note 2 note 3], [note 2 note 3], ],  [[note 1 note 2 note 3], [note 2 note 3], ]
     const trebleArray = res[0];
     const bassArray = res[1];
 
@@ -445,37 +451,66 @@ export const playSong = (composition, bpm, trebleSynth, bassSynth, effectsArrays
   
     //loop through the treble array and for each beat (chord) that contains notes, trigger every note in the chord with its pitch duration and startTime
     //offset that is the offset from the start of the beat
-   
+    let wasPaused = Tone.Transport.state === 'paused';
+    
+    if (Tone.Transport.state !== 'started') {
+      Tone.Transport.start();
+    }
+    
+    //clear the events from a past tense playing of the song
+    scheduledEvents.forEach((event) => Tone.Transport.clear(event));
+    scheduledEvents = [];
+    Tone.Destination.mute = false;
     //get the current time as our start time to offset from.
-    const now = Tone.now()
-
+     now = Tone.now();
+    currentChordIndex =  (currentChordIndex === trebleArray.length) ? 0 : currentChordIndex;
     //play every chord with an offset from start time of what number chord is current Ex: now +  3rdchord (chord == 2) = now + 2 beats.
-    for(let chord = 0; chord < trebleArray.length; chord++){
+    for(let chord = currentChordIndex; chord < trebleArray.length; chord++){
         //trigger each note in the chord at its start time offset + now + chord
         for(let note = 0; note < trebleArray[chord].length; note++){
-            treblePoly.triggerAttackRelease(trebleArray[chord][note].pitch, trebleArray[chord][note].duration, trebleArray[chord][note].startTime + now + chord*beatTime);
+           const event =  Tone.Transport.scheduleOnce(
+            (time) => {treblePoly.triggerAttackRelease(trebleArray[chord][note].pitch, trebleArray[chord][note].duration, time);
+              console.log("the current start time is: " + time);
+            },
+            Tone.Time(trebleArray[chord][note].startTime + now + (chord - currentChordIndex) * beatTime).toSeconds()
+            );
+           scheduledEvents.push(event);
         }
+
        // do the same for the bass notes
         for(let note = 0; note < bassArray[chord].length; note++){
-            bassPoly.triggerAttackRelease(bassArray[chord][note].pitch, bassArray[chord][note].duration, bassArray[chord][note].startTime + now + chord*beatTime);
+          const event = Tone.Transport.scheduleOnce(
+            (time) =>{
+             bassPoly.triggerAttackRelease(bassArray[chord][note].pitch, bassArray[chord][note].duration, time);
+            }, 
+            Tone.Time(bassArray[chord][note].startTime + now + (chord - currentChordIndex) * beatTime).toSeconds()
+          )
+          scheduledEvents.push(event);
         }
-    }
-
-    //TODO: see if it is possible to use Tone.Part so as to syncronize the Tone to the Transport object which would give ability to pause and start
-    //over
-
-    // let chord = 0;
-    // var treblePart = new Tone.Part(function(time, value){
-    //     //the value is an object which contains both the note and the velocity
-
-    //     for(let note = 0; note < trebleArray[chord].length; note++){
-    //         treblePoly.triggerAttackRelease(trebleArray[chord][note].pitch, trebleArray[chord][note].duration, trebleArray[chord][note].startTime + now + chord*beatTime);
-    //     }
-    //     chord++;
-    // }, trebleArray).start(0);
+  }
+  if(wasPaused){
+    console.log("It was paused!");
+    currentChordIndex = 0;
+  }
+}
 
 
-
+export const pauseSong = (bpm) =>{
+ 
+  const beatTime = 60 / Number(bpm);
+   // Pause the transport to stop the ongoing sequence
+   if(Tone.Transport.state !== 'started'){
+    console.log("the transport is not started!!!!");
+    return;
+   }
+   Tone.Transport.pause();
+   Tone.Destination.mute = true;
+   const elapsedTime = Tone.now() - now;
+   scheduledEvents.forEach((event) => Tone.Transport.clear(event));
+   scheduledEvents = [];
+   // Store the current chord index so we can resume from this point
+   currentChordIndex = Math.floor(elapsedTime / beatTime);  
+   console.log("The current chord index: " + currentChordIndex);
 }
 
 

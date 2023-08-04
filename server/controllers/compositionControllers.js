@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 const CompositionsModel = require("../Models/Compositions");
-const ObjectId = mongoose.Types.ObjectId;
 
 const createNewComposition = async (req, res) =>{
     //get the data about the new composition
@@ -27,9 +26,6 @@ const createNewComposition = async (req, res) =>{
         console.log(err);
         res.send({success: false, message: err});
       }
-    //send a success object if everything goes as planned
-    //and send the composition id back as well
-    //otherwise send a success false objec
 }
 
 const getSongData = async (req, res) =>{
@@ -67,10 +63,7 @@ const getSongsByUsername = async (req, res) =>{
   //get the compositions titles and songIds that were made by the username user
 
 const authorQuery = { author: username }; 
-
-
 const fieldsToInclude = "_id title";
-
 
 const result = await CompositionsModel.find(authorQuery, fieldsToInclude);
   if (!result) {

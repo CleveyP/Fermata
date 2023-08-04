@@ -4,7 +4,7 @@ import "./Composition.css";
 import { Measure } from "./Measure/Measure/Measure";
 import { Piece } from "../../Classes/PieceClass";
 import axios from "axios";
-import { playSong } from "../../playSong";
+import { pauseSong, playSong } from "../../playSong";
 
 export const PieceContext = createContext({
   pieceObject: {},
@@ -24,7 +24,7 @@ export const Composition = (props) => {
   const [bassVolume, setBassVolume] = useState(props.optionsObj.bassVolume || 0);
   const [trebleEffects, setTrebleEffects] = useState(props.optionsObj.trebleEffects || []);
   const [bassEffects, setBassEffects] = useState(props.optionsObj.bassEffects || []);
- 
+  const [activeBeat, setActiveBeat] = useState(0);
 
   const effectOptions = [
     "distortion",
@@ -127,6 +127,7 @@ export const Composition = (props) => {
           >
             Play
           </button>
+          <button onClick={() => pauseSong(bpm)}>Pause</button>
           <div className="bpm-box">
             <p>{`BPM: ${bpm}`}</p>
             <input
@@ -253,6 +254,7 @@ const Staff = (props) => {
       {measures.map((measure, index) => {
         return (
           <Measure
+            activeBeat={props.activeBeat}
             beatsArray={measure.beatsArray}
             measureNumber={measure.measureNumber}
             key={index}
@@ -263,9 +265,3 @@ const Staff = (props) => {
   );
 };
 
-{
-  /* <input type="checkbox"  name="chorus-effect" value="chorus" onClick={ e => handleTrebleEffectClick(e)}/>
-<label htmlFor="chorus-effect">Chorus</label>
-<input type="checkbox" name="distortion-effect" value="distortion" onClick={e => handleTrebleEffectClick(e)}/>
-<label htmlFor="distortion-effect">Distortion</label> */
-}

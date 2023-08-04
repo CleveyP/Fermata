@@ -25,6 +25,7 @@ export const Measure = (props) => {
       {beats.map((beat, index) => {
         return (
           <Beat
+            background={props.activeBeat == beat.beatId ? "isActive" : ""} 
             notesArray={beat.notesArray}
             key={index}
             beatNumber={beat.beatNumber}
