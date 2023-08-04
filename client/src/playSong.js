@@ -475,9 +475,9 @@ export const playSong = (composition, bpm, trebleSynth, bassSynth, effectsArrays
     for(let chord = currentChordIndex; chord < trebleArray.length; chord++){
         //trigger each note in the chord at its start time offset + now + chord
         for(let note = 0; note < trebleArray[chord].length; note++){
-           const event =  Tone.Transport.scheduleOnce(
+           const event =  Tone.Transport.schedule(
             (time) => {treblePoly.triggerAttackRelease(trebleArray[chord][note].pitch, trebleArray[chord][note].duration, time);
-              console.log("the current start time is: " + time);
+              
             },
             Tone.Time(trebleArray[chord][note].startTime + now + (chord - currentChordIndex) * beatTime).toSeconds()
             );
@@ -486,7 +486,7 @@ export const playSong = (composition, bpm, trebleSynth, bassSynth, effectsArrays
 
        // do the same for the bass notes
         for(let note = 0; note < bassArray[chord].length; note++){
-          const event = Tone.Transport.scheduleOnce(
+          const event = Tone.Transport.schedule(
             (time) =>{
              bassPoly.triggerAttackRelease(bassArray[chord][note].pitch, bassArray[chord][note].duration, time);
             }, 
@@ -512,11 +512,11 @@ export const pauseSong = (bpm) =>{
    }
    //Tone.Transport.pause();
    Tone.Destination.mute = true;
-   const elapsedTime = Tone.now() - beginning;
+   const elapsedTime = Tone.now() - now;
    scheduledEvents.forEach((event) => Tone.Transport.clear(event));
    scheduledEvents = [];
    // Store the current chord index so we can resume from this point
-   currentChordIndex = Math.floor(elapsedTime / beatTime);  
+   currentChordIndex += Math.floor(elapsedTime / beatTime);  
    console.log("The current chord index: " + currentChordIndex);
 }
 
