@@ -25,7 +25,7 @@ export const Composition = (props) => {
   const [trebleEffects, setTrebleEffects] = useState(props.optionsObj.trebleEffects || []);
   const [bassEffects, setBassEffects] = useState(props.optionsObj.bassEffects || []);
   const [activeBeat, setActiveBeat] = useState(0);
-
+  const [isPaused, setIsPaused] = useState(true);
   const effectOptions = [
     "distortion",
     "chorus",
@@ -117,17 +117,23 @@ export const Composition = (props) => {
         </button>
         </div>
         <div className="music-controls">
-          <button
+          <button className="play-pause-button"
             onClick={() => {
+              if(isPaused){  
+              setIsPaused(false);  
               playSong(pieceObject, Number(bpm), trebleSynth, bassSynth, [
                 trebleEffects,
                 bassEffects,
               ], [trebleVolume, bassVolume]);
+            }
+            else{
+                setIsPaused(true)
+                pauseSong(bpm);
+            }
             }}
           >
-            Play
+            {isPaused ? "Play" : "Pause"}
           </button>
-          <button onClick={() => pauseSong(bpm)}>Pause</button>
           <div className="bpm-box">
             <p>{`BPM: ${bpm}`}</p>
             <input
