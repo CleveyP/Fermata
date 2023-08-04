@@ -5,6 +5,7 @@ import * as Tone from "tone";
 let currentChordIndex = 0;
 let scheduledEvents = [];
 let now = 0;
+let beginning =0;
 
 
 //create an array of notes to be played out of the composition array
@@ -452,7 +453,7 @@ export const playSong = (composition, bpm, trebleSynth, bassSynth, effectsArrays
     //loop through the treble array and for each beat (chord) that contains notes, trigger every note in the chord with its pitch duration and startTime
     //offset that is the offset from the start of the beat
     let wasPaused = Tone.Transport.state === 'paused';
-    
+   
     if (Tone.Transport.state !== 'started') {
       Tone.Transport.start();
     }
@@ -462,8 +463,14 @@ export const playSong = (composition, bpm, trebleSynth, bassSynth, effectsArrays
     scheduledEvents = [];
     Tone.Destination.mute = false;
     //get the current time as our start time to offset from.
-     now = Tone.now();
-    currentChordIndex =  (currentChordIndex === trebleArray.length) ? 0 : currentChordIndex;
+     now = Tone.now() - beginning;
+
+     if(beginning===0 ){
+      beginning = now;
+     }
+   
+    currentChordIndex =  (currentChordIndex >= trebleArray.length) ? 0 : currentChordIndex;
+     console.log(currentChordIndex, trebleArray.length);
     //play every chord with an offset from start time of what number chord is current Ex: now +  3rdchord (chord == 2) = now + 2 beats.
     for(let chord = currentChordIndex; chord < trebleArray.length; chord++){
         //trigger each note in the chord at its start time offset + now + chord
@@ -503,9 +510,9 @@ export const pauseSong = (bpm) =>{
     console.log("the transport is not started!!!!");
     return;
    }
-   Tone.Transport.pause();
+   //Tone.Transport.pause();
    Tone.Destination.mute = true;
-   const elapsedTime = Tone.now() - now;
+   const elapsedTime = Tone.now() - beginning;
    scheduledEvents.forEach((event) => Tone.Transport.clear(event));
    scheduledEvents = [];
    // Store the current chord index so we can resume from this point
