@@ -139,19 +139,19 @@ export const Composition = (props) => {
           <button onClick={() => {toBeginning(bpm); setIsPaused(true)}} className="playback-button">
             <FontAwesomeIcon  icon={faBackwardStep}/>
           </button>
-          </div>
+          
           <div className="bpm-box">
             <p>{`BPM: ${bpm}`}</p>
             <input
               type="range"
               min="50"
-              max="500"
+              max="400"
               step="1"
               value={bpm}
               onChange={handleBpmChange}
             />
           </div>
-          
+          </div>
           <div className="synth-controls">
             <div className="treble-controls">
               <label htmlFor="treble-synth">Treble Synth Effect</label>
