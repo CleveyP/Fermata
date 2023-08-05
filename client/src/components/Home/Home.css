@@ -57,6 +57,18 @@ overflow-y: scroll;
     border: 3px solid black;
 }
 
+.song-item:nth-child(odd) {
+    background-color: beige;
+}
+
+.song-item:hover{
+    background-color: rgb(211, 179, 136);
+}
+
+.song-item:nth-child(odd):hover {
+    background-color: rgb(220, 220, 176);
+}
+
 .song-item p{
     color: black;
     text-decoration: underline;
