@@ -1,4 +1,13 @@
 
+.home{
+    height: 100vh;
+    width: 100%;
+    background-image: url("https://th.bing.com/th/id/R.9fdc00ba5a4978ef580e2b8db94f30ae?rik=VwG3EVtAwoLilQ&riu=http%3a%2f%2fhobartwebsitedesign.com.au%2fwp-content%2fuploads%2f2011%2f02%2fWebsite-background-music.jpg&ehk=0AfGs%2bD8kwi%2bX4r638j5fIf9Imy7De9iW15j4SPBCyM%3d&risl=&pid=ImgRaw&r=0&sres=1&sresct=1");
+    background-position: center;
+    background-size: cover;
+}
+
+
 header{
     display: flex;
     flex-direction: row;
@@ -34,7 +43,7 @@ align-items: center;
 .song-list{
     margin: auto;
     height: 85%;
-    width: 69%;
+    width: 90%;
 }
 
 .songs-list{
