@@ -81,6 +81,9 @@ export const Home = () =>{
         if(res.data.success){
             navigate(`/editComposition/${res.data.songId}`);
         }
+        else if(res.data.message){
+            alert(res.data.message);
+        }
     }
 
     return (

@@ -9,6 +9,16 @@ const createNewComposition = async (req, res) =>{
     const username = req.body.username;
     const compositionArray = req.body.compositionArray;
     console.log(songName, numBars, timeSig);
+
+  //make sure that the name of the composition does not exist for that user.
+  let nameSearchResult = await CompositionsModel.findOne({author: username, title: songName});
+  if(nameSearchResult){
+    //there already exists a composition with that name by the same author
+    res.send({success: false, message: "You already have a song named " + songName + ". You must name all songs uniquely."});
+    return;
+  }
+
+
     //generate new id for the song 
     //put the song in the CompositionModel in the db
     try {
