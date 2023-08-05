@@ -4,8 +4,9 @@ import "./Composition.css";
 import { Measure } from "./Measure/Measure/Measure";
 import { Piece } from "../../Classes/PieceClass";
 import axios from "axios";
-import { pauseSong, playSong } from "../../playSong";
-
+import { pauseSong, playSong, toBeginning } from "../../playSong";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faBackwardStep, faPause, faPlay } from '@fortawesome/free-solid-svg-icons'
 export const PieceContext = createContext({
   pieceObject: {},
   setPieceObject: () => {},
@@ -117,7 +118,8 @@ export const Composition = (props) => {
         </button>
         </div>
         <div className="music-controls">
-          <button className="play-pause-button"
+        <div className="playback-controls">
+          <button className="playback-button"
             onClick={() => {
               if(isPaused){  
               setIsPaused(false);  
@@ -132,8 +134,12 @@ export const Composition = (props) => {
             }
             }}
           >
-            {isPaused ? "Play" : "Pause"}
+            {isPaused ? <FontAwesomeIcon icon={faPlay} /> : <FontAwesomeIcon  icon={faPause} />}
           </button>
+          <button onClick={() => {toBeginning(bpm); setIsPaused(true)}} className="playback-button">
+            <FontAwesomeIcon  icon={faBackwardStep}/>
+          </button>
+          </div>
           <div className="bpm-box">
             <p>{`BPM: ${bpm}`}</p>
             <input
@@ -145,6 +151,7 @@ export const Composition = (props) => {
               onChange={handleBpmChange}
             />
           </div>
+          
           <div className="synth-controls">
             <div className="treble-controls">
               <label htmlFor="treble-synth">Treble Synth Effect</label>

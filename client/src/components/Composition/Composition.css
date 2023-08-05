@@ -60,3 +60,27 @@ img{
 .bpm-box{
     display: flex;
 }
+
+
+.playback-controls{
+    display: flex;
+    flex-direction: row;
+    height: 50px;
+    width: fit-content;
+    justify-content: space-evenly;
+    align-items: center;
+    background-color: burlywood;
+    border: 3px solid black;
+}
+
+.playback-button{
+    height: 40px;
+    width: 40px;
+    color: black;
+    background-color: transparent;
+    border: none;
+}
+
+.playback-button:hover{
+    color: grey;
+}

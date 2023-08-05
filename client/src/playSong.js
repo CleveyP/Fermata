@@ -304,9 +304,6 @@ export const playSong = (composition, bpm, trebleSynth, bassSynth, effectsArrays
         bassEffects.push(effect);
     }
    
-   
-
-
 
     let treblePoly;
     let bassPoly;
@@ -461,6 +458,7 @@ export const playSong = (composition, bpm, trebleSynth, bassSynth, effectsArrays
     //clear the events from a past tense playing of the song
     scheduledEvents.forEach((event) => Tone.Transport.clear(event));
     scheduledEvents = [];
+
     Tone.Destination.mute = false;
     //get the current time as our start time to offset from.
      now = Tone.now() - beginning;
@@ -468,18 +466,18 @@ export const playSong = (composition, bpm, trebleSynth, bassSynth, effectsArrays
      if(beginning===0 ){
       beginning = now;
      }
-   
+     
+    //if we have played through the whole song, start at the beginning. 
     currentChordIndex =  (currentChordIndex >= trebleArray.length) ? 0 : currentChordIndex;
-     console.log(currentChordIndex, trebleArray.length);
     //play every chord with an offset from start time of what number chord is current Ex: now +  3rdchord (chord == 2) = now + 2 beats.
     for(let chord = currentChordIndex; chord < trebleArray.length; chord++){
         //trigger each note in the chord at its start time offset + now + chord
         for(let note = 0; note < trebleArray[chord].length; note++){
-           const event =  Tone.Transport.schedule(
-            (time) => {treblePoly.triggerAttackRelease(trebleArray[chord][note].pitch, trebleArray[chord][note].duration, time);
-              
+           const event =  Tone.Transport.schedule((time) => {
+            treblePoly.triggerAttackRelease(trebleArray[chord][note].pitch, trebleArray[chord][note].duration, time);
             },
             Tone.Time(trebleArray[chord][note].startTime + now + (chord - currentChordIndex) * beatTime).toSeconds()
+            
             );
            scheduledEvents.push(event);
         }
@@ -502,22 +500,27 @@ export const playSong = (composition, bpm, trebleSynth, bassSynth, effectsArrays
 }
 
 
+
+
 export const pauseSong = (bpm) =>{
  
   const beatTime = 60 / Number(bpm);
-   // Pause the transport to stop the ongoing sequence
+  
    if(Tone.Transport.state !== 'started'){
     console.log("the transport is not started!!!!");
     return;
    }
-   //Tone.Transport.pause();
    Tone.Destination.mute = true;
    const elapsedTime = Tone.now() - now;
    scheduledEvents.forEach((event) => Tone.Transport.clear(event));
    scheduledEvents = [];
    // Store the current chord index so we can resume from this point
    currentChordIndex += Math.floor(elapsedTime / beatTime);  
-   console.log("The current chord index: " + currentChordIndex);
+}
+
+export const toBeginning = (bpm) =>{
+  pauseSong(bpm);
+  currentChordIndex = 0;
 }
 
 
