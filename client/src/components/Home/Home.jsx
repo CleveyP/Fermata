@@ -10,6 +10,7 @@ import { Piece } from "../../Classes/PieceClass";
 
 
 export const Home = () =>{
+    const [refreshSongList, setRefreshSongList] = useState(false);
     const [username, setUsername] = useState("");
     const [songList, setSongList] = useState([]); //array of { songId: ,  title: }
     const [modalIsOpen, setIsOpen] = useState(false);
@@ -34,9 +35,11 @@ export const Home = () =>{
 
         getSongs();
         
-    }, []);
+    }, [refreshSongList]);
 
-
+    const refresh = () =>{
+        setRefreshSongList(!refreshSongList);
+    }
 
     const handleLogout = () =>{
         //delete the username cookie 
@@ -96,7 +99,7 @@ export const Home = () =>{
                     <button onClick={() => {setIsOpen(true)}}>Create New Composition</button>
                     {/* <CompositionList/> */}
                 </div>
-                <SongList songList={songList}/>
+                <SongList songList={songList} refresh={refresh}/>
                 
             </main>
 
@@ -134,10 +137,16 @@ export const Home = () =>{
 const SongList = (props) =>{
     const navigate = useNavigate();
 
+    const handleDelete = async (e) =>{
+        const songId = e.currentTarget.getAttribute('songid');
+        const deleteResult = await axios.post("http://localhost:8080/composition/delete", {songId: songId})
+        //trigger rerendering of the song list
+        props.refresh();
+    }
     //switch user to the edit view of the song that they clicked
     const handleClick = async (e) =>{
         //get the songId of the clicked song
-        const songId = e.currentTarget.getAttribute('songId');
+        const songId = e.currentTarget.getAttribute('songid');
         console.log("the clicked song's id is: " + songId);
         
         //navigate to the editComposition component using the song's id
@@ -153,8 +162,9 @@ const SongList = (props) =>{
                 props.songList.map((song) =>{
                     console.log(song._id);
                     return (
-                    <div className = "song-item" songId={song._id} onClick={(e) => {handleClick(e)}}>
-                        <p>{song.title}</p>
+                    <div className = "song-item" >
+                        <p songid={song._id}  onClick={(e) => {handleClick(e)}}>{song.title}</p>
+                        <button songid={song._id} onClick={(e) => handleDelete(e)}>X</button>
                     </div>
                     );
                 })

@@ -105,4 +105,19 @@ else
 }
 
 
-module.exports = {createNewComposition, getSongData, saveComposition,  getSongsByUsername}
+const deleteComposition = async (req, res) =>{
+  //try to delete a composition document in the CompositionModel in mongodb
+  const songId = req.body.songId;
+  console.log("inside delete composition the songId: " + songId);
+  //try to delete the document that matches the song id in the composition model
+  const deleteResult = await CompositionsModel.findByIdAndRemove({ _id: songId});
+  if(deleteResult){
+    res.send({success: true});
+  }
+  else{
+    res.send({success: false});
+  }
+}
+
+
+module.exports = {createNewComposition, getSongData, saveComposition,  getSongsByUsername, deleteComposition}
