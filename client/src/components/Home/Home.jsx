@@ -88,9 +88,11 @@ export const Home = () =>{
         <div className="home">
             <header>
                 <h2>Fermata</h2>
-                <p>{username}</p>
-                <button onClick={handleLogout}>Logout</button>
-                <button onClick={() => {navigate(`/settings`)}}>Settings</button>
+              
+                <div className="nav-buttons">
+                    <button onClick={handleLogout}>Logout</button>
+                    <button onClick={() => {navigate(`/settings`)}}>Settings</button>
+                </div>
             </header>
             <main>
                 <h1>{`Hello, ${username}!`}</h1>

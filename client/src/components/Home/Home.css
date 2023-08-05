@@ -1,10 +1,78 @@
-.songs-list{height: 70%;
+
+header{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    background-color: darkgreen;
+    color: white;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.nav-buttons {
+display: flex;
+flex-direction: row;
+height: 100%;
+width: 10%;
+justify-content: space-between;
+align-items: center;
+}
+
+.nav-buttons button{
+    color: white;
+    background-color: transparent;
+    border: none;
+}
+
+.nav-buttons button:hover{
+    color: red;
+}
+
+
+.song-list{
+    margin: auto;
+    height: 85%;
+    width: 69%;
+}
+
+.songs-list{
+height: 80%;
 border-width: medium;
 border-style: groove;
 margin-left: 30%;
 margin-right: 30%;
 margin-top: 5%;
 overflow-y: scroll;
+}
+
+.song-item{
+    padding: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    background-color:burlywood;
+    border: 3px solid black;
+}
+
+.song-item p{
+    color: black;
+    text-decoration: underline;
+}
+.song-item p:hover{
+    color: red;
+    text-decoration: none;
+}
+.song-item button{
+    background-color: darkred;
+    color: white;
+}
+.song-item button:hover{
+   
+    background-color: red;
+    color: black;
 }
 
 main{
