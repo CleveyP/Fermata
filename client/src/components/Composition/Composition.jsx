@@ -126,7 +126,7 @@ export const Composition = (props) => {
               playSong(pieceObject, Number(bpm), trebleSynth, bassSynth, [
                 trebleEffects,
                 bassEffects,
-              ], [trebleVolume, bassVolume]);
+              ], [trebleVolume, bassVolume], setActiveBeat);
             }
             else{
                 setIsPaused(true)
@@ -136,7 +136,7 @@ export const Composition = (props) => {
           >
             {isPaused ? <FontAwesomeIcon icon={faPlay} /> : <FontAwesomeIcon  icon={faPause} />}
           </button>
-          <button onClick={() => {toBeginning(bpm); setIsPaused(true)}} className="playback-button">
+          <button onClick={() => {toBeginning(bpm, setActiveBeat); setIsPaused(true)}} className="playback-button">
             <FontAwesomeIcon  icon={faBackwardStep}/>
           </button>
           
@@ -235,6 +235,7 @@ export const Composition = (props) => {
           return (
             <PieceContext.Provider value={value}>
               <Staff
+                activeBeat={activeBeat}
                 clef={staff.clef}
                 measures={staff.measuresArray}
                 timeSig={staff.timeSig}

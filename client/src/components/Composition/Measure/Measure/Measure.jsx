@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useContext } from "react";
+import { useState, useEffect, useRef, useContext, memo } from "react";
 import "./Measure.css";
 import { Piece, Note as NoteObj } from "../../../../Classes/PieceClass";
 import { PieceContext } from "../../Composition";
@@ -25,6 +25,7 @@ export const Measure = (props) => {
       {beats.map((beat, index) => {
         return (
           <Beat
+            activeBeat={props.activeBeat}
             background={props.activeBeat == beat.beatId ? "isActive" : ""} 
             notesArray={beat.notesArray}
             key={index}
@@ -37,9 +38,9 @@ export const Measure = (props) => {
   );
 };
 
-const Beat = (props) => {
+const Beat = memo((props) => {
   const [notesArray, setNotesArray] = useState(props.notesArray);
-
+  let {pieceObject} = useContext(PieceContext);
   useEffect(() =>{
     if(props.notesArray.length !== 0){
       return;
@@ -48,8 +49,10 @@ const Beat = (props) => {
 
   }, [props.notesArray])
 
+  const numBeatsInStaff = 4 * Math.floor(Number(pieceObject.timeSig)/10);
+
   return (
-    <div className="beat">
+    <div className={`beat ${(props.activeBeat === props.beatId || (props.activeBeat+ numBeatsInStaff) === props.beatId) ? "active-beat" : ""}`}>
       {notesArray.map((note, index) => {
         return (
           <Note
@@ -65,7 +68,7 @@ const Beat = (props) => {
       })}
     </div>
   );
-};
+});
 
 const Note = (props) => {
   let {pieceObject, setPieceObject} = useContext(PieceContext);

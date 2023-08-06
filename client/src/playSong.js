@@ -250,12 +250,12 @@ export const getNotesArrays = (composition, bpm) => {
 };
 
 //take in teh composition and apply the tempo, syths and effects. Play the composition.
-export const playSong = (composition, bpm, trebleSynth, bassSynth, effectsArrays, eq) => {
+export const playSong = (composition, bpm, trebleSynth, bassSynth, effectsArrays, eq, setActiveBeat) => {
     const beatTime = (60 / bpm ); //get the time in seconds of one beat
     const res = getNotesArrays(composition, bpm);  // [[note 1 note 2 note 3], [note 2 note 3], ],  [[note 1 note 2 note 3], [note 2 note 3], ]
     const trebleArray = res[0];
     const bassArray = res[1];
-
+    let numBeatsInStaff = 4 * Math.floor(composition.timeSig / 10);
     //get the effects on the treble that the user picks
     let trebleEffects = [];
     let bassEffects = [];
@@ -467,6 +467,8 @@ export const playSong = (composition, bpm, trebleSynth, bassSynth, effectsArrays
       beginning = now;
      }
      
+    
+
     //if we have played through the whole song, start at the beginning. 
     currentChordIndex =  (currentChordIndex >= trebleArray.length) ? 0 : currentChordIndex;
     //play every chord with an offset from start time of what number chord is current Ex: now +  3rdchord (chord == 2) = now + 2 beats.
@@ -474,7 +476,12 @@ export const playSong = (composition, bpm, trebleSynth, bassSynth, effectsArrays
         //trigger each note in the chord at its start time offset + now + chord
         for(let note = 0; note < trebleArray[chord].length; note++){
            const event =  Tone.Transport.schedule((time) => {
+            //play the current note in the chord and
             treblePoly.triggerAttackRelease(trebleArray[chord][note].pitch, trebleArray[chord][note].duration, time);
+              //and also update the active beat in the UI
+              let grandStaffNum = Math.floor(chord / numBeatsInStaff);
+              let activeChord = chord + grandStaffNum * numBeatsInStaff;
+              setActiveBeat(activeChord);
             },
             Tone.Time(trebleArray[chord][note].startTime + now + (chord - currentChordIndex) * beatTime).toSeconds()
             
@@ -518,7 +525,8 @@ export const pauseSong = (bpm) =>{
    currentChordIndex += Math.floor(elapsedTime / beatTime);  
 }
 
-export const toBeginning = (bpm) =>{
+export const toBeginning = (bpm, setActiveBeat) =>{
+  setActiveBeat(0);
   pauseSong(bpm);
   currentChordIndex = 0;
 }

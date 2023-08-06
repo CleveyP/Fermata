@@ -17,6 +17,10 @@
     background-color: white;
 }
 
+.active-beat{
+    border-right: 3px solid darkgreen;    
+}
+
 .note{
 height: 11%;
 width: 100%;
