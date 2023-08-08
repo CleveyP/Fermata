@@ -7,6 +7,7 @@ import axios from "axios";
 import { pauseSong, playSong, toBeginning } from "../../playSong";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBackwardStep, faPause, faPlay } from '@fortawesome/free-solid-svg-icons'
+import { getChordByBeatId } from "../AIControls/AILogic";
 export const PieceContext = createContext({
   pieceObject: {},
   setPieceObject: () => {},
@@ -116,6 +117,7 @@ export const Composition = (props) => {
         >
           Home
         </button>
+        <button onClick={() => getChordByBeatId(33, pieceObject)}>test</button>
         </div>
         <div className="music-controls">
         <div className="playback-controls">

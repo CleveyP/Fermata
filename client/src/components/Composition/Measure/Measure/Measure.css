@@ -18,7 +18,8 @@
 }
 
 .active-beat{
-    border-right: 3px solid darkgreen;    
+    border-right: 3px solid red;
+    border-left: 3px solid red;    
 }
 
 .note{
