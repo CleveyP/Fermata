@@ -1,5 +1,9 @@
 //helper functions for AI 
 
+import { chordsAndScales } from "./chordsAndScales";
+
+const NUMBER_OF_NOTES_IN_STAFF = 9;
+const  NO_CHORD_PENALTY = -5;
 //@param beatId is the id of the treble beat NOT ever the bass beat id
 //returns all the notes in a beat including both treble and bass chords as an object: {trebleChord: ['A'], bassChord: ['B', 'C'], totalChord: ['A', 'B', 'C']}
 export const getChordByBeatId = (beatId, pieceObj) =>{
@@ -105,7 +109,7 @@ for(let note =0; note< notesArray.length; note++){
 
 //returns an array of all notes in the passed in scale
 const getAllDiatonicNotes = (keySignature) => {
-
+    return chordsAndScales.scales.get(keySignature);
 }
 
 const getNoteDurationFromString = (durationString, timeSig) =>{
@@ -232,6 +236,163 @@ const getPitchNameFromNoteObj = (note, clef) => {
       }
       let res = pitch.slice(0, 1) + accidental + pitch.slice(1);
       return res;
+}
+
+//@param notes is an array of capital letter chars. KeySignature is a string that is the name of a major key signature.
+//returns a list of all possible chords that could be created from notes
+//returns an empty array if no chords are possible. Returns an array of every diatonic note if the notes array arg is empty
+export const getPossibleChords = (notes, keySignature) =>{
+    if(notes.length == 0){
+        return chordsAndScales.chords.get(keySignature);
+    }
+    //find out if there is a non diatonic note in the notes array.
+    const diatonicNotes = chordsAndScales.scales.get(keySignature);
+    //filter out the nondiatonic notes and then work from there 
+     notes.filter( (note) =>{
+        return diatonicNotes.includes(note);
+    });
+    if(notes.length == 0){
+        //there are no diatonic notes in the current beat. Therefore, we cannot hazard a guess at what the chord should be
+        //so return all chords that are possible
+        //TODO: make sure that there isn't just a sharp note in there that might be a secondary dominant chord
+        return [];
+    }
+    //get the list of all diatonic chords from the keySignature
+   let chordList =  chordsAndScales.chords.get(keySignature);
+   //For every note in notes, look through each chord in chordList. If the current note is not contained in the current chord, then delete that chord 
+   //from the chord list
+   for(let note =0; note< notes.length; note++){
+    let currNote = notes[note];
+        for(let i=0; i< chordList.length; i++){
+            if(!chordList[i].includes(currNote)){
+                chordList.splice(i, 1);
+            }
+        }
+   } 
+
+   if(chordList.length == 0){
+    //there is a maj or min interval in the notes....
+   let  isMajSecond;
+    chordList = chordsAndScales.chords.get(keySignature);
+   
+   // get rid of the duplicates in the notes array
+   let freq = new Map();
+   let numUnique = 0;
+   for(let i =0; i< notes.length; i++){
+    if(!freq.has(notes[i])){
+        numUnique++;
+        freq.set(notes[i], 0);
+    }
+    freq.set(notes[i], freq.get(notes[i])+1);
+   }
+    //if the length of unique notes is 2  
+    if(numUnique == 2){
+       //then find out if we can create a sus chord.
+       //if the index between the two notes is a major second then we can create a sus chord
+       const uniqueNotes = Array.from(freq.keys());
+       let index0;
+       let index1;
+       for(let j=0; j<diatonicNotes.length; j++){
+        if(uniqueNotes[0] == diatonicNotes[j]){
+            index0 = j;
+        }
+        if(uniqueNotes[1] == diatonicNotes[j]){
+            index1 = j;
+        }
+       }
+       if( (index0 == 6 && index1 == 0) || (index0 == 0 && index1 == 6)){
+         isMajSecond = false;
+       }
+       else if( (index0 == 2 && index1 == 3) || (index0 == 3 && index1 == 2)){
+        isMajSecond = false;
+      }
+      else{
+        isMajSecond = true;
+      }
+      
+      if(isMajSecond){
+        //suggest the sus four
+        let susFour = [];
+        susFour.push(uniqueNotes[0]);
+        susFour.push(uniqueNotes[1]);
+        //find the perfect fifth to complete the sus chord.
+        if(index0 === 0 || index1 === 0){
+            susFour.push(diatonicNotes[4]);
+        }
+        else if(index0 === 1 || index1 === 1){
+            susFour.push(diatonicNotes[5]);
+        }
+        else if((index0 === 3 && index1 === 4) && (index0 === 4 && index1 === 3)){
+            susFour.push(diatonicNotes[0]);
+        }
+        else if((index0 === 4 && index1 === 5) && (index0 === 5 && index1 === 4)){
+            susFour.push(diatonicNotes[1]);
+        }
+        else if((index0 === 5 && index1 === 6) && (index0 === 6 && index1 === 5)){
+            susFour.push(diatonicNotes[2]);
+        }
+        let res = [];
+        res.push(susFour);
+        // TODO: or a dominant 7 chord
+        return res;
+      }
+
+         
+       
+    }
+
+    //num unique notes is greater than 2... 
+    
+   }
+
+   return chordList;
+   //return the chord list
+}
+
+
+
+//given a beat id and composition and staff, returns an array of all possible notes that could be placed and their corresponding values
+//the array is sorted by value in descending order.  
+const getNoteWeights = (beatId, pieceObj, staff, keySignature ) =>{
+    let diatonicNotes = chordsAndScales.scales.get(keySignature);
+    let notesWeights = [];
+    //get the chord that already exists in that beat
+    const chordObj  = getChordByBeatId(beatId, pieceObj);
+   let trebleNotes = [...chordObj.trebleChord];
+   let bassNotes = [...chordObj.bassChord];
+   let totalNotes = [...chordObj.totalChord];
+   let staffNotes = (staff === "treble") ? trebleNotes : bassNotes;
+   
+         //if the beat that the user wants a note placed in already has two notes
+        if(staffNotes.length > 1){
+            console.log("cannot put another note in that beat since it already has 2 notes in the " + staff + " part of the beat");
+            return notesWeights;
+        }   
+            //place a diatonic note in every possible location that does not already have a note in it and calculate these note values
+            for(let note = 0; note < diatonicNotes.length; note++){
+                if( !staffNotes.includes(diatonicNotes[note]) ){
+                    let value=0;
+                    //place the note in the beat
+                    totalNotes.push(diatonicNotes[note]);
+                    //increase the placement's value by the number of chords that it could potentially create
+                    let possibleChords = getPossibleChords(totalNotes, keySignature);
+                    if(possibleChords.length === 0){
+                        value += NO_CHORD_PENALTY;
+                    }
+                    else{
+                        value += possibleChords.length;
+                    }
+                    //check voice leading from previous bars as well
+
+                    //store the note and value
+                    notesWeights.push({note: diatonicNotes[note], weight: value});
+                    //remove it from the array
+                    let totalNotes = [...chordObj.totalChord];
+                }
+            }
+            //sort the notesWeigts by weight in descending order
+        notesWeights.sort((a, b) => {return a.weight - b.weight}).reverse();
+        return notesWeights;
 }
 
 

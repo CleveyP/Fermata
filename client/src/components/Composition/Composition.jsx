@@ -5,9 +5,14 @@ import { Measure } from "./Measure/Measure/Measure";
 import { Piece } from "../../Classes/PieceClass";
 import axios from "axios";
 import { pauseSong, playSong, toBeginning } from "../../playSong";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBackwardStep, faPause, faPlay } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faBackwardStep,
+  faPause,
+  faPlay,
+} from "@fortawesome/free-solid-svg-icons";
 import { getChordByBeatId } from "../AIControls/AILogic";
+import { AIControls } from "../AIControls/AIControls";
 export const PieceContext = createContext({
   pieceObject: {},
   setPieceObject: () => {},
@@ -15,17 +20,30 @@ export const PieceContext = createContext({
 
 export const Composition = (props) => {
   const navigate = useNavigate();
+  const [isAIMode, setIsAIMode] = useState(false);
   const [staffs, setStaffs] = useState([]);
   const [pieceObject, setPieceObject] = useState(
-    new Piece(props.numMeasures, props.timeSig)
+   new Piece(props.numMeasures, props.timeSig)
   );
-  const [bpm, setBpm] = useState(props.optionsObj.bpm || 120);    
-  const [trebleSynth, setTrebleSynth] = useState(props.optionsObj.trebleSynth || "FM");
-  const [bassSynth, setBassSynth] = useState(props.optionsObj.BassSynth || "FM");
-  const [trebleVolume, setTrebleVolume] = useState(props.optionsObj.trebleVolume || 0);  
-  const [bassVolume, setBassVolume] = useState(props.optionsObj.bassVolume || 0);
-  const [trebleEffects, setTrebleEffects] = useState(props.optionsObj.trebleEffects || []);
-  const [bassEffects, setBassEffects] = useState(props.optionsObj.bassEffects || []);
+  const [bpm, setBpm] = useState(props.optionsObj.bpm || 120);
+  const [trebleSynth, setTrebleSynth] = useState(
+    props.optionsObj.trebleSynth || "FM"
+  );
+  const [bassSynth, setBassSynth] = useState(
+    props.optionsObj.BassSynth || "FM"
+  );
+  const [trebleVolume, setTrebleVolume] = useState(
+    props.optionsObj.trebleVolume || 0
+  );
+  const [bassVolume, setBassVolume] = useState(
+    props.optionsObj.bassVolume || 0
+  );
+  const [trebleEffects, setTrebleEffects] = useState(
+    props.optionsObj.trebleEffects || []
+  );
+  const [bassEffects, setBassEffects] = useState(
+    props.optionsObj.bassEffects || []
+  );
   const [activeBeat, setActiveBeat] = useState(0);
   const [isPaused, setIsPaused] = useState(true);
   const effectOptions = [
@@ -44,15 +62,14 @@ export const Composition = (props) => {
       props.compositionObj
     );
     setPieceObject(newPiece);
-    setBpm(props.optionsObj.bpm)
-    setTrebleSynth(props.optionsObj.trebleSynth)
-    setBassSynth(props.optionsObj.bassSynth)
-    setTrebleVolume(props.optionsObj.trebleVolume)
-    setBassVolume(props.optionsObj.bassVolume)
-    setTrebleEffects(props.optionsObj.trebleEffects || [])
-    setBassEffects(props.optionsObj.bassEffects || [])
+    setBpm(props.optionsObj.bpm);
+    setTrebleSynth(props.optionsObj.trebleSynth);
+    setBassSynth(props.optionsObj.bassSynth);
+    setTrebleVolume(props.optionsObj.trebleVolume);
+    setBassVolume(props.optionsObj.bassVolume);
+    setTrebleEffects(props.optionsObj.trebleEffects || []);
+    setBassEffects(props.optionsObj.bassEffects || []);
     setStaffs([...newPiece.staffsArray]);
-
   }, [props.timeSig, props.bassEffects, props.trebleEffects]);
 
   const handleBpmChange = (e) => {
@@ -82,7 +99,7 @@ export const Composition = (props) => {
     //post the json array to the backend
     const res = await axios.post(
       "http://localhost:8080/composition/saveComposition",
-      { 
+      {
         composition: jsonComposition,
         songId: props.songId,
         bpm: bpm,
@@ -91,8 +108,8 @@ export const Composition = (props) => {
         trebleVolume: trebleVolume,
         bassVolume: bassVolume,
         trebleEffects: trebleEffects,
-        bassEffects: bassEffects 
-    }
+        bassEffects: bassEffects,
+      }
     );
 
     //check if it was a succes
@@ -108,8 +125,12 @@ export const Composition = (props) => {
   return (
     <div className="composition">
       <h1>{props.songTitle}</h1>
+
       <div className="composition-control-btns">
         <button onClick={handleSave}>Save</button>
+        <button onClick={() => setIsAIMode(!isAIMode)}>
+          {isAIMode ? "Playback Controls" : "AI Mode"}
+        </button>
         <button
           onClick={() => {
             navigate("/home");
@@ -117,31 +138,47 @@ export const Composition = (props) => {
         >
           Home
         </button>
-        <button onClick={() => getChordByBeatId(33, pieceObject)}>test</button>
-        </div>
-        <div className="music-controls">
+        <button onClick={() => getChordByBeatId(65, pieceObject)}>test</button>
+      </div>
+      { isAIMode ? <AIControls setActiveBeat={setActiveBeat}/> :
+      <div className="music-controls">
         <div className="playback-controls">
-          <button className="playback-button"
+          <button
+            className="playback-button"
             onClick={() => {
-              if(isPaused){  
-              setIsPaused(false);  
-              playSong(pieceObject, Number(bpm), trebleSynth, bassSynth, [
-                trebleEffects,
-                bassEffects,
-              ], [trebleVolume, bassVolume], setActiveBeat);
-            }
-            else{
-                setIsPaused(true)
+              if (isPaused) {
+                setIsPaused(false);
+                playSong(
+                  pieceObject,
+                  Number(bpm),
+                  trebleSynth,
+                  bassSynth,
+                  [trebleEffects, bassEffects],
+                  [trebleVolume, bassVolume],
+                  setActiveBeat
+                );
+              } else {
+                setIsPaused(true);
                 pauseSong(bpm);
-            }
+              }
             }}
           >
-            {isPaused ? <FontAwesomeIcon icon={faPlay} /> : <FontAwesomeIcon  icon={faPause} />}
+            {isPaused ? (
+              <FontAwesomeIcon icon={faPlay} />
+            ) : (
+              <FontAwesomeIcon icon={faPause} />
+            )}
           </button>
-          <button onClick={() => {toBeginning(bpm, setActiveBeat); setIsPaused(true)}} className="playback-button">
-            <FontAwesomeIcon  icon={faBackwardStep}/>
+          <button
+            onClick={() => {
+              toBeginning(bpm, setActiveBeat);
+              setIsPaused(true);
+            }}
+            className="playback-button"
+          >
+            <FontAwesomeIcon icon={faBackwardStep} />
           </button>
-          
+
           <div className="bpm-box">
             <p>{`BPM: ${bpm}`}</p>
             <input
@@ -153,83 +190,101 @@ export const Composition = (props) => {
               onChange={handleBpmChange}
             />
           </div>
-          </div>
-          <div className="synth-controls">
-            <div className="treble-controls">
-              <label htmlFor="treble-synth">Treble Synth Effect</label>
-              <select
-                name="treble-synth"
-                value={trebleSynth}
-                onChange={(e) => setTrebleSynth(e.target.value)}
-              >
-                <option value="FM">FM</option>
-                <option value="SYNTH">SYNTH</option>
-                <option value="AM">AM</option>
-                <option value="MONO">MONO</option>
-                <option value="DUO">DUO</option>
-              </select>
-              <div className="treble-vol-box">
-                <label htmlFor="treble-volume">Treble Volume: {trebleVolume}</label>
-                <input name="treble-volume" type="range" min={-10} max={10} step={1}  value={trebleVolume} onChange={(e) => setTrebleVolume(e.target.value)} />
-              </div>
-              </div>
-              <div className="bass-controls">
-                <label htmlFor="bass-synth">Bass Synth Effect</label>
-                <select
-                  name="bass-synth"
-                  value={bassSynth}
-                  onChange={(e) => setBassSynth(e.target.value)}
-                >
-                  <option value="FM">FM</option>
-                  <option value="SYNTH">SYNTH</option>
-                  <option value="AM">AM</option>
-                  <option value="MONO">MONO</option>
-                  <option value="DUO">DUO</option>
-                </select>
-                <div className="bass-vol-box">
-                  <label htmlFor="bass-volume">Bass Volume: {bassVolume}</label>
-                  <input name="bass-volume" type="range" min={-10} max={10} step={1}  value={bassVolume} onChange={(e) => setBassVolume(e.target.value)} />
-              </div>
-              </div>
+        </div>
+        <div className="synth-controls">
+          <div className="treble-controls">
+            <label htmlFor="treble-synth">Treble Synth Effect</label>
+            <select
+              name="treble-synth"
+              value={trebleSynth}
+              onChange={(e) => setTrebleSynth(e.target.value)}
+            >
+              <option value="FM">FM</option>
+              <option value="SYNTH">SYNTH</option>
+              <option value="AM">AM</option>
+              <option value="MONO">MONO</option>
+              <option value="DUO">DUO</option>
+            </select>
+            <div className="treble-vol-box">
+              <label htmlFor="treble-volume">
+                Treble Volume: {trebleVolume}
+              </label>
+              <input
+                name="treble-volume"
+                type="range"
+                min={-10}
+                max={10}
+                step={1}
+                value={trebleVolume}
+                onChange={(e) => setTrebleVolume(e.target.value)}
+              />
             </div>
-            <div className="effects-box">
-              {/* treble effects checkboxes */}
-              <div className="treble effects-container">
-                <h2>Treble Effects</h2>
-                {effectOptions.map((option) => (
-                  <div key={option}>
-                    <label>
-                      <input
-                        type="checkbox"
-                        name={option}
-                        checked={trebleEffects.includes(option)}
-                        onChange={(e) => handleCheckboxChange(e, "treble")}
-                      />
-                      {option}
-                    </label>
-                  </div>
-                ))}
+          </div>
+          <div className="bass-controls">
+            <label htmlFor="bass-synth">Bass Synth Effect</label>
+            <select
+              name="bass-synth"
+              value={bassSynth}
+              onChange={(e) => setBassSynth(e.target.value)}
+            >
+              <option value="FM">FM</option>
+              <option value="SYNTH">SYNTH</option>
+              <option value="AM">AM</option>
+              <option value="MONO">MONO</option>
+              <option value="DUO">DUO</option>
+            </select>
+            <div className="bass-vol-box">
+              <label htmlFor="bass-volume">Bass Volume: {bassVolume}</label>
+              <input
+                name="bass-volume"
+                type="range"
+                min={-10}
+                max={10}
+                step={1}
+                value={bassVolume}
+                onChange={(e) => setBassVolume(e.target.value)}
+              />
+            </div>
+          </div>
+        </div>
+        <div className="effects-box">
+          {/* treble effects checkboxes */}
+          <div className="treble effects-container">
+            <h2>Treble Effects</h2>
+            {effectOptions.map((option) => (
+              <div key={option}>
+                <label>
+                  <input
+                    type="checkbox"
+                    name={option}
+                    checked={trebleEffects.includes(option)}
+                    onChange={(e) => handleCheckboxChange(e, "treble")}
+                  />
+                  {option}
+                </label>
               </div>
-              {/* bass effects checkboxes */}
+            ))}
+          </div>
+          {/* bass effects checkboxes */}
 
-              <div className="bass effects-container">
-                <h2>Bass Effects</h2>
-                {effectOptions.map((option) => (
-                  <div key={option}>
-                    <label>
-                      <input
-                        type="checkbox"
-                        name={option}
-                        checked={bassEffects.includes(option)}
-                        onChange={(e) => handleCheckboxChange(e, "bass")}
-                      />
-                      {option}
-                    </label>
-                  </div>
-                ))}
+          <div className="bass effects-container">
+            <h2>Bass Effects</h2>
+            {effectOptions.map((option) => (
+              <div key={option}>
+                <label>
+                  <input
+                    type="checkbox"
+                    name={option}
+                    checked={bassEffects.includes(option)}
+                    onChange={(e) => handleCheckboxChange(e, "bass")}
+                  />
+                  {option}
+                </label>
               </div>
-            </div>
+            ))}
           </div>
+        </div>
+      </div>}
 
       {
         //map out the staffs
@@ -280,4 +335,3 @@ const Staff = (props) => {
     </div>
   );
 };
-

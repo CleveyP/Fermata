@@ -53,6 +53,7 @@ const Beat = memo((props) => {
 
   return (
     <div className={`beat ${(props.activeBeat === props.beatId || (props.activeBeat+ numBeatsInStaff) === props.beatId) ? "active-beat" : ""}`}>
+      <p className="beat-id-p">{props.beatId}</p>
       {notesArray.map((note, index) => {
         return (
           <Note
