@@ -17,6 +17,18 @@
     background-color: white;
 }
 
+.beat-id-p{
+    position: relative;
+    padding: 0;
+    margin: 0;
+    top: -20px;
+    left: 0;
+    height: 5px;
+    width: 5px;
+    color: white;
+    font-size: 10px;
+}
+
 .active-beat{
     border-right: 3px solid red;
     border-left: 3px solid red;    
