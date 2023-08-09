@@ -38,6 +38,7 @@ export const Composition = (props) => {
   const [bassVolume, setBassVolume] = useState(
     props.optionsObj.bassVolume || 0
   );
+  const [attRel, setAttRel] = useState({treble: {att: 0, rel: 0, sus: 0}, bass: {att: 0, rel: 0, sus: 0}})
   const [trebleEffects, setTrebleEffects] = useState(
     props.optionsObj.trebleEffects || []
   );
@@ -193,6 +194,28 @@ export const Composition = (props) => {
         </div>
         <div className="synth-controls">
           <div className="treble-controls">
+          <div className="attack-release-controls">
+                <label htmlFor="attack">Att</label>
+                <input type="range" name="attack" id="attack" value={attRel.treble.att} min={0} max={10} step={.5} onChange = {(e) => {
+                     let newAttRel = attRel; 
+                     newAttRel.treble.att = e.target.value;
+                    setAttRel({...newAttRel})}}/>
+                <label htmlFor="release">Rel</label>
+                <input type="range" name="release" id="release" value={attRel.treble.rel} min={0} max={10} step={.5} onChange = {(e) => {
+                     let newAttRel = attRel; 
+                     newAttRel.treble.rel = e.target.value;
+                    setAttRel({...newAttRel})}}/>
+                <label htmlFor="sustain">Sus</label>
+                <input type="range" name="sustain" id="sustain" value={attRel.treble.sus}  min={0} max={10} step={.5} onChange = {(e) => {
+                     let newAttRel = attRel; 
+                     newAttRel.treble.sus = e.target.value;
+                    setAttRel({...newAttRel})}}/>
+                <div className="attack-release-display">
+                    <p>att: {attRel.treble.att}</p>
+                    <p>rel: {attRel.treble.rel}</p>
+                    <p>sus: {attRel.treble.sus}</p>
+                </div>
+            </div>
             <label htmlFor="treble-synth">Treble Synth Effect</label>
             <select
               name="treble-synth"
@@ -221,6 +244,28 @@ export const Composition = (props) => {
             </div>
           </div>
           <div className="bass-controls">
+          <div className="attack-release-controls">
+                <label htmlFor="attack">Att</label>
+                <input type="range" name="attack" id="attack" value={attRel.bass.att} min={0} max={10} step={.5} onChange = {(e) => {
+                     let newAttRel = attRel; 
+                     newAttRel.bass.att = e.target.value;
+                    setAttRel({...newAttRel})}}/>
+                <label htmlFor="release">Rel</label>
+                <input type="range" name="release" id="release" valu={attRel.bass.rel} min={0} max={10} step={.5} onChange = {(e) => {
+                     let newAttRel = attRel; 
+                     newAttRel.bass.rel = e.target.value;
+                    setAttRel({...newAttRel})}}/>
+                <label htmlFor="sustain">Sus</label>
+                <input type="range" name="sustain" id="sustain" value={attRel.bass.sus}  min={0} max={10} step={.5} onChange =  {(e) => {
+                     let newAttRel = attRel; 
+                     newAttRel.bass.sus = e.target.value;
+                    setAttRel({...newAttRel})}}/>
+                <div className="attack-release-display">
+                    <p>att: {attRel.bass.att}</p>
+                    <p>rel: {attRel.bass.rel}</p>
+                    <p>sus: {attRel.bass.sus}</p>
+                </div>
+            </div>
             <label htmlFor="bass-synth">Bass Synth Effect</label>
             <select
               name="bass-synth"
@@ -325,6 +370,7 @@ const Staff = (props) => {
       {measures.map((measure, index) => {
         return (
           <Measure
+            clef={props.clef}
             activeBeat={props.activeBeat}
             beatsArray={measure.beatsArray}
             measureNumber={measure.measureNumber}

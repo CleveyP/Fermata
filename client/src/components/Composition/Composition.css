@@ -84,3 +84,37 @@ img{
 .playback-button:hover{
     color: grey;
 }
+
+.attack-release-controls{
+    display: flex;
+    background-color: navy;
+    width: 93%;
+    margin: auto;
+    border: black solid 3px;
+}
+
+.attack-release-controls input{
+    appearance: slider-vertical;
+    height: 50px;
+    width: 10px;
+}
+.attack-release-controls label{
+    writing-mode: vertical-rl;
+text-orientation: upright;
+font-size: 9px;
+letter-spacing: .01px;
+color: white;
+}
+
+.attack-release-display{
+    margin-left: 30%;
+}
+
+.attack-release-display p{
+    color: white;
+    height: fit-content;
+    font-size: 10px;
+    width: 100%;
+}
+
+
