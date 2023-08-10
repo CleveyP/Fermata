@@ -107,7 +107,7 @@ color: white;
 }
 
 .attack-release-display{
-    margin-left: 30%;
+    margin-left: 20%;
 }
 
 .attack-release-display p{
@@ -115,6 +115,7 @@ color: white;
     height: fit-content;
     font-size: 10px;
     width: 100%;
+    margin:0;
 }
 
 
