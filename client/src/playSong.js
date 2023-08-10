@@ -250,7 +250,7 @@ export const getNotesArrays = (composition, bpm) => {
 };
 
 //take in teh composition and apply the tempo, syths and effects. Play the composition.
-export const playSong = (composition, bpm, trebleSynth, bassSynth, effectsArrays, eq, setActiveBeat) => {
+export const playSong = (composition, bpm, trebleSynth, bassSynth, effectsArrays, eq, setActiveBeat, attRelObj) => {
     const beatTime = (60 / bpm ); //get the time in seconds of one beat
     const res = getNotesArrays(composition, bpm);  // [[note 1 note 2 note 3], [note 2 note 3], ],  [[note 1 note 2 note 3], [note 2 note 3], ]
     const trebleArray = res[0];
@@ -307,128 +307,78 @@ export const playSong = (composition, bpm, trebleSynth, bassSynth, effectsArrays
 
     let treblePoly;
     let bassPoly;
+    let newSynth;
+    console.log(JSON.stringify(attRelObj));
     //create two poly synths capable of playing multiple notes at the same time and mount them to the client's speakers 
     //the type of synth depends on the 3rd and 4th args to playSong function
     switch(trebleSynth){
         case "FM":
-            treblePoly = new Tone.PolySynth(Tone.FMSynth).toDestination();
-            treblePoly.set( { oscillator : {type : "sine"}});
+       let fmSynth = new Tone.FMSynth();
+        fmSynth.set({ envelope: {
+          attack: attRelObj.treble.att,
+          release: attRelObj.treble.rel,
+          sustain: attRelObj.treble.sus
+        }});
+        treblePoly = new Tone.PolySynth( {synth: fmSynth}).toDestination();
             break;
         case "AM":
-            treblePoly = new Tone.PolySynth( Tone.AMSynth).toDestination();
+          let am = new Tone.AMSynth();
+          am.set({envelope: {
+            attack: attRelObj.treble.att,
+            release: attRelObj.treble.rel,
+            sustain: attRelObj.treble.sus
+          }});
+          treblePoly = new Tone.PolySynth( {synth: am}).toDestination();
             break;
         case "SYNTH":
-           
-            const newSynth = new Tone.Synth({
-                "volume": 0,
-                "detune": 0,
-                "portamento": 0,
-                "envelope": {
-                    "attack": 0.5,
-                    "attackCurve": "exponential",
-                    "decay": 1,
-                    "decayCurve": "exponential",
-                    "release": 2,
-                    "releaseCurve": "exponential",
-                    "sustain": 0.5
-                },
-                "oscillator": {
-                    "partialCount": 10,
-                    "partials": [
-                        0.007236810378086416,
-                        0,
-                        0.030140817901234556,
-                        0,
-                        0.012345679012345685,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0
-                    ],
-                    "phase": 10,
-                    "type": "custom"
-                }
-            });
-            treblePoly = new Tone.PolySynth( {synth: newSynth}).toDestination();
+           let synth = new Tone.Synth();
+            synth.set({envelope: {
+              attack: attRelObj.treble.att,
+              release: attRelObj.treble.rel,
+              sustain: attRelObj.treble.sus
+            }});
+            treblePoly = new Tone.PolySynth( {synth: synth}).toDestination();
             break;
         case "MONO":
-            treblePoly = new Tone.PolySynth(Tone.MonoSynth).toDestination();
+          let mono = new Tone.MonoSynth();
+          treblePoly = new Tone.PolySynth( {synth: mono}).toDestination();
             break;
         case "DUO":
-                const duoSynth = new Tone.DuoSynth({
-                    harmonicity: 1.5,
-                    voice0: {
-                      oscillator: { type: 'sawtooth' },
-                      envelope: { attack: 0.1, decay: 0.2, sustain: 0.5, release: 0.8 },
-                    },
-                    voice1: {
-                      oscillator: { type: 'sine' },
-                      envelope: { attack: 0.2, decay: 0.3, sustain: 0.4, release: 0.6 },
-                    },
-                  }).toDestination();
-                  treblePoly = new Tone.PolySynth({synth: duoSynth}).toDestination();
-                  break;
+          let duo = new Tone.DuoSynth();
+          treblePoly = new Tone.PolySynth( {synth: duo}).toDestination();
+            break;
     }
+    //apply the attack release sustain that the user set to the treble synth
+    treblePoly.options.envelope.attack = attRelObj.treble.att;
+    treblePoly.options.envelope.release = attRelObj.treble.rel;
+    treblePoly.options.envelope.sustain = attRelObj.treble.sus;
+
     switch(bassSynth){
         case "FM":
-            bassPoly = new Tone.PolySynth( Tone.FMSynth).toDestination();
+          newSynth = new Tone.FMSynth();
+          bassPoly = new Tone.PolySynth( {synth: newSynth}).toDestination();
             break;
         case "AM":
-            bassPoly = new Tone.PolySynth( Tone.AMSynth).toDestination();
+          newSynth = new Tone.AMSynth();
+          bassPoly = new Tone.PolySynth( {synth: newSynth}).toDestination();
             break;
         case "SYNTH":
-            const newSynth = new Tone.Synth({
-                "volume": 0,
-                "detune": 0,
-                "portamento": 0,
-                "envelope": {
-                    "attack": 3,
-                    "attackCurve": "exponential",
-                    "decay": 1,
-                    "decayCurve": "exponential",
-                    "release": 2,
-                    "releaseCurve": "exponential",
-                    "sustain": 0.5
-                },
-                "oscillator": {
-                    "partialCount": 10,
-                    "partials": [
-                        0.007236810378086416,
-                        0,
-                        0.030140817901234556,
-                        0,
-                        0.012345679012345685,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0
-                    ],
-                    "phase": 10,
-                    "type": "custom"
-                }
-            });
-            bassPoly = new Tone.PolySynth( {synth: newSynth}).toDestination();
+          newSynth = new Tone.Synth();
+          bassPoly = new Tone.PolySynth( {synth: newSynth}).toDestination();
             break;
         case "MONO":
-            bassPoly = new Tone.PolySynth(Tone.MonoSynth).toDestination();
+          newSynth = new Tone.MonoSynth();
+          bassPoly = new Tone.PolySynth( {synth: newSynth}).toDestination();
             break;
         case "DUO":
-            const duoSynth = new Tone.DuoSynth({
-                harmonicity: 1.5,
-                voice0: {
-                  oscillator: { type: 'sine' },
-                  envelope: { attack: 0.1, decay: 0.2, sustain: 0.5, release: 0.8 },
-                },
-                voice1: {
-                  oscillator: { type: 'sine' },
-                  envelope: { attack: 0.2, decay: 0.3, sustain: 0.4, release: 0.6 },
-                },
-              }).toDestination();
-              bassPoly = new Tone.PolySynth({synth: duoSynth}).toDestination();
+          newSynth = new Tone.DuoSynth();
+          bassPoly = new Tone.PolySynth( {synth: newSynth}).toDestination();
               break;
     }
+    //apply the attack release sustain that the user set to the treble synth
+    bassPoly.options.envelope.attack = attRelObj.bass.att;
+    bassPoly.options.envelope.release = attRelObj.bass.rel;
+    bassPoly.options.envelope.sustain = attRelObj.bass.sus;
 
     //apply the equalizer to the synths
     treblePoly.volume.value = eq[0];

@@ -38,7 +38,7 @@ export const Composition = (props) => {
   const [bassVolume, setBassVolume] = useState(
     props.optionsObj.bassVolume || 0
   );
-  const [attRel, setAttRel] = useState({treble: {att: 0, rel: 0, sus: 0}, bass: {att: 0, rel: 0, sus: 0}})
+  const [attRel, setAttRel] = useState({treble: {att: 0, rel: 0, sus: 0.2}, bass: {att: 0, rel: 0, sus: .2}})
   const [trebleEffects, setTrebleEffects] = useState(
     props.optionsObj.trebleEffects || []
   );
@@ -156,7 +156,8 @@ export const Composition = (props) => {
                   bassSynth,
                   [trebleEffects, bassEffects],
                   [trebleVolume, bassVolume],
-                  setActiveBeat
+                  setActiveBeat,
+                  attRel
                 );
               } else {
                 setIsPaused(true);
@@ -206,7 +207,7 @@ export const Composition = (props) => {
                      newAttRel.treble.rel = e.target.value;
                     setAttRel({...newAttRel})}}/>
                 <label htmlFor="sustain">Sus</label>
-                <input type="range" name="sustain" id="sustain" value={attRel.treble.sus}  min={0} max={10} step={.5} onChange = {(e) => {
+                <input type="range" name="sustain" id="sustain" value={attRel.treble.sus}  min={0} max={1} step={.05} onChange = {(e) => {
                      let newAttRel = attRel; 
                      newAttRel.treble.sus = e.target.value;
                     setAttRel({...newAttRel})}}/>
@@ -256,7 +257,7 @@ export const Composition = (props) => {
                      newAttRel.bass.rel = e.target.value;
                     setAttRel({...newAttRel})}}/>
                 <label htmlFor="sustain">Sus</label>
-                <input type="range" name="sustain" id="sustain" value={attRel.bass.sus}  min={0} max={10} step={.5} onChange =  {(e) => {
+                <input type="range" name="sustain" id="sustain" value={attRel.bass.sus}  min={0} max={1} step={.05} onChange =  {(e) => {
                      let newAttRel = attRel; 
                      newAttRel.bass.sus = e.target.value;
                     setAttRel({...newAttRel})}}/>
