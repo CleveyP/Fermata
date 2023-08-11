@@ -1,0 +1,9 @@
+.ai-console{
+    height: 40%;
+
+    margin: auto;
+    overflow-y: hidden;
+    border: solid darkgreen 3px;
+    background-color: black;
+    color: white;
+}

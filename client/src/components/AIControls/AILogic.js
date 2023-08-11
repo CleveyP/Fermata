@@ -47,7 +47,7 @@ let durationRange = beatId - trebleId + .25;
 let staffNum = Math.floor(trebleId / (4 * beatsPerMeasure * 2) );
 console.log(staffNum)
 //find which measure to go into
-let measureNum = Math.floor( (trebleId - staffNum * (4 * beatsPerMeasure * 2)) / 4);
+let measureNum = Math.floor( (trebleId - staffNum * (4 * beatsPerMeasure * 2)) / beatsPerMeasure);
 console.log(measureNum)
 //find which beat to go into
 let beatNum = ( trebleId % (4 * beatsPerMeasure * 2) ) % beatsPerMeasure;
@@ -393,6 +393,17 @@ const getNoteWeights = (beatId, pieceObj, staff, keySignature ) =>{
             //sort the notesWeigts by weight in descending order
         notesWeights.sort((a, b) => {return a.weight - b.weight}).reverse();
         return notesWeights;
+}
+
+export const analyzeBeat = (beatId, pieceObject, keySignature, consoleHistory, setConsoleHistory) =>{
+  console.log(JSON.stringify(pieceObject))
+  //get all the notes in the beat 
+  console.log("selected beat: " + beatId)
+  let allNotesMessage = `The notes in beat ${beatId} are: `;
+  const allChordsArray = getChordByBeatId(beatId, pieceObject).totalChord;
+  allNotesMessage += allChordsArray.join(" ");
+ // and display them to the console
+ setConsoleHistory([...consoleHistory, allNotesMessage]);
 }
 
 

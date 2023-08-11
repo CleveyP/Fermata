@@ -25,6 +25,7 @@ export const Measure = (props) => {
       {beats.map((beat, index) => {
         return (
           <Beat
+            isAIMode={props.isAIMode}
             clef={props.clef}
             activeBeat={props.activeBeat}
             background={props.activeBeat == beat.beatId ? "isActive" : ""} 
@@ -54,7 +55,7 @@ const Beat = memo((props) => {
 
   return (
     <div className={`beat ${(props.activeBeat === props.beatId || (props.activeBeat+ numBeatsInStaff) === props.beatId) ? "active-beat" : ""}`}>
-      {props.clef === 'treble' && <p className="beat-id-p">{props.beatId}</p>}
+      {props.isAIMode && props.clef === 'treble' && <p className="beat-id-p">{props.beatId}</p>}
       {notesArray.map((note, index) => {
         return (
           <Note

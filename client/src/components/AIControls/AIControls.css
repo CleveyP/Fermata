@@ -1,0 +1,13 @@
+.key-sig-box{
+    display: flex;
+    border: solid black 3px;
+    justify-content: space-around;
+    align-items: center;
+    background-color: burlywood;
+    width: 30%;
+    
+}
+
+.key-sig-box select{
+    width: fit-content;
+}

@@ -308,35 +308,19 @@ export const playSong = (composition, bpm, trebleSynth, bassSynth, effectsArrays
     let treblePoly;
     let bassPoly;
     let newSynth;
-    console.log(JSON.stringify(attRelObj));
     //create two poly synths capable of playing multiple notes at the same time and mount them to the client's speakers 
     //the type of synth depends on the 3rd and 4th args to playSong function
     switch(trebleSynth){
         case "FM":
        let fmSynth = new Tone.FMSynth();
-        fmSynth.set({ envelope: {
-          attack: attRelObj.treble.att,
-          release: attRelObj.treble.rel,
-          sustain: attRelObj.treble.sus
-        }});
         treblePoly = new Tone.PolySynth( {synth: fmSynth}).toDestination();
             break;
         case "AM":
           let am = new Tone.AMSynth();
-          am.set({envelope: {
-            attack: attRelObj.treble.att,
-            release: attRelObj.treble.rel,
-            sustain: attRelObj.treble.sus
-          }});
           treblePoly = new Tone.PolySynth( {synth: am}).toDestination();
             break;
         case "SYNTH":
            let synth = new Tone.Synth();
-            synth.set({envelope: {
-              attack: attRelObj.treble.att,
-              release: attRelObj.treble.rel,
-              sustain: attRelObj.treble.sus
-            }});
             treblePoly = new Tone.PolySynth( {synth: synth}).toDestination();
             break;
         case "MONO":
@@ -349,10 +333,11 @@ export const playSong = (composition, bpm, trebleSynth, bassSynth, effectsArrays
             break;
     }
     //apply the attack release sustain that the user set to the treble synth
-    treblePoly.options.envelope.attack = attRelObj.treble.att;
+    treblePoly.options.envelope.attack = Number(attRelObj.treble.att);
     treblePoly.options.envelope.release = attRelObj.treble.rel;
     treblePoly.options.envelope.sustain = attRelObj.treble.sus;
-
+    treblePoly.options.portamento = Number(attRelObj.treble.mento);
+    console.log(JSON.stringify(treblePoly.options))
     switch(bassSynth){
         case "FM":
           newSynth = new Tone.FMSynth();
@@ -376,10 +361,10 @@ export const playSong = (composition, bpm, trebleSynth, bassSynth, effectsArrays
               break;
     }
     //apply the attack release sustain that the user set to the treble synth
-    bassPoly.options.envelope.attack = attRelObj.bass.att;
+    bassPoly.options.envelope.attack = Number(attRelObj.bass.att);
     bassPoly.options.envelope.release = attRelObj.bass.rel;
     bassPoly.options.envelope.sustain = attRelObj.bass.sus;
-
+    bassPoly.options.portamento = Number(attRelObj.bass.mento);
     //apply the equalizer to the synths
     treblePoly.volume.value = eq[0];
     bassPoly.volume.value = eq[1];

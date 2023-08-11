@@ -141,7 +141,7 @@ export const Composition = (props) => {
         </button>
         <button onClick={() => getChordByBeatId(65, pieceObject)}>test</button>
       </div>
-      { isAIMode ? <AIControls setActiveBeat={setActiveBeat}/> :
+      { isAIMode ? <AIControls setActiveBeat={setActiveBeat} composition={pieceObject}/> :
       <div className="music-controls">
         <div className="playback-controls">
           <button
@@ -350,6 +350,7 @@ export const Composition = (props) => {
           return (
             <PieceContext.Provider value={value}>
               <Staff
+                isAIMode={isAIMode}
                 activeBeat={activeBeat}
                 clef={staff.clef}
                 measures={staff.measuresArray}
@@ -383,6 +384,7 @@ const Staff = (props) => {
       {measures.map((measure, index) => {
         return (
           <Measure
+            isAIMode={props.isAIMode}
             clef={props.clef}
             activeBeat={props.activeBeat}
             beatsArray={measure.beatsArray}
