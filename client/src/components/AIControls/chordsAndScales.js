@@ -52,6 +52,13 @@ chords.set("Gb", [['Gb', 'Bb', 'Db'], ['Ab', 'Cb', "Eb"], ['Bb', "Db", 'F'], ['C
 // chords.set("F#", ['F#', 'G#', 'A#', 'B', 'C#', 'D#', 'E#']);
 // chords.set("G#", ['G#', 'A#', 'B#', 'C#', 'D#', 'E#', 'chords
 
+export const chordQualities = ["major", "minor", "minor", "major", "dominant", "minor", "diminished"];
+
+
+export function deepCopyArray(arr) {
+    return arr.map(subArray => [...subArray]);
+  }
+
 export const chordsAndScales = {chords: chords, scales: scales};
 
 
