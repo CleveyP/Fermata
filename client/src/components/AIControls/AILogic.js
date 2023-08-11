@@ -274,7 +274,6 @@ export const getPossibleChords = (notes, keySignature) =>{
             }
         }
    } 
-  console.log("chord list after filter is: " + chordList[0].join(" "));
    if(chordList.length == 0){
     //there is a maj or min interval in the notes....
    let  isMajSecond;
