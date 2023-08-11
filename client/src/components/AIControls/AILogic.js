@@ -251,7 +251,7 @@ export const getPossibleChords = (notes, keySignature) =>{
         return  chordsAndScales.chords.get(keySignature);
     }
     //find out if there is a non diatonic note in the notes array.
-    const diatonicNotes =getAllDiatonicNotes(keySignature);
+    const diatonicNotes = getAllDiatonicNotes(keySignature);
     //filter out the nondiatonic notes and then work from there 
      notes.filter( (note) =>{
         return diatonicNotes.includes(note);
@@ -271,6 +271,7 @@ export const getPossibleChords = (notes, keySignature) =>{
         for(let i=0; i< chordList.length; i++){
             if(!chordList[i].includes(currNote)){
                 chordList.splice(i, 1);
+                i--;
             }
         }
    } 
@@ -358,7 +359,7 @@ const getChordsNames = (notes, keySignature) =>{
   console.log("the possible chords found are " + possibleChords.join(" "));
   //find the index of each chord in the chords list
   let diatonicChords = getAllDiatonicChords(keySignature);
-  let roots = chordsAndScales.scales.get(keySignature);
+  let roots = getAllDiatonicNotes(keySignature);
   let results = [];
   //loop through the possible chords array and match the index that they occur at to the 
   for(let i = 0; i< possibleChords.length; i++){
@@ -385,7 +386,7 @@ const getChordsNames = (notes, keySignature) =>{
 //given a beat id and composition and staff, returns an array of all possible notes that could be placed and their corresponding values
 //the array is sorted by value in descending order.  
 const getNoteWeights = (beatId, pieceObj, staff, keySignature ) =>{
-    let diatonicNotes = chordsAndScales.scales.get(keySignature);
+    let diatonicNotes = getAllDiatonicNotes(keySignature);
     let notesWeights = [];
     //get the chord that already exists in that beat
     const chordObj  = getChordByBeatId(beatId, pieceObj);
