@@ -7,7 +7,7 @@ import { chordsAndScales, chordQualities, deepCopyArray } from "./chordsAndScale
 const NUMBER_OF_NOTES_IN_STAFF = 9;
 const  NO_CHORD_PENALTY = -5;
 //@param beatId is the id of the treble beat NOT ever the bass beat id
-//returns all the notes in a beat including both treble and bass chords as an object: {trebleChord: ['A'], bassChord: ['B', 'C'], totalChord: ['A', 'B', 'C']}
+//returns all the notes in a beat including both treble and bass chords as an object: {trebleChord: [{'A', "firstEigth"}], bassChord: ['B', 'C'], totalChord: ['A', 'B', 'C']}
 export const getChordByBeatId = (beatId, pieceObj) =>{
 const timeSig = pieceObj.timeSig;
 //create trebleChord, bassChord, totalChord
@@ -69,9 +69,9 @@ for(let note =0; note< notesArray.length; note++){
     if(currentDuration >= durationRange){
         //this note is persisting into the beat that we are curious about
        let pitchLetter = getPitchNameFromNoteObj(currentNote, 'treble');
-        trebleChord.push(pitchLetter);
+        trebleChord.push({letter: pitchLetter, duration: currentNote.duration});
         //also push it into the totalChord
-        totalChord.push(pitchLetter);
+        totalChord.push({letter: pitchLetter, duration: currentNote.duration});
     }
     
 }
@@ -91,14 +91,12 @@ for(let note =0; note< notesArray.length; note++){
     
         
     let currentDuration = getNoteDurationFromString(currentNote.duration, timeSig);
-    console.log(currentDuration + " for note: " + currentNote)
-    console.log(durationRange);
     if(currentDuration >= durationRange){
         //this note is persisting into the beat that we are curious about
        let pitchLetter = getPitchNameFromNoteObj(currentNote, 'bass');
-        bassChord.push(pitchLetter);
+        bassChord.push({letter: pitchLetter, duration: currentNote.duration});
         //also push it into the totalChord
-        totalChord.push(pitchLetter);
+        totalChord.push({letter: pitchLetter, duration: currentNote.duration});
     }
     
     }
@@ -243,7 +241,7 @@ const getPitchNameFromNoteObj = (note, clef) => {
       return res;
 }
 
-//@param notes is an array of capital letter chars. KeySignature is a string that is the name of a major key signature.
+//@param notes is an array Note objects. KeySignature is a string that is the name of a major key signature.
 //returns a list of all possible chords that could be created from notes
 //returns an empty array if no chords are possible. Returns an array of every diatonic note if the notes array arg is empty
 export const getPossibleChords = (notes, keySignature) =>{
@@ -254,7 +252,7 @@ export const getPossibleChords = (notes, keySignature) =>{
     const diatonicNotes = getAllDiatonicNotes(keySignature);
     //filter out the nondiatonic notes and then work from there 
      notes.filter( (note) =>{
-        return diatonicNotes.includes(note);
+        return diatonicNotes.includes(note.letter);
     });
     if(notes.length == 0){
         //there are no diatonic notes in the current beat. Therefore, we cannot hazard a guess at what the chord should be
@@ -264,18 +262,77 @@ export const getPossibleChords = (notes, keySignature) =>{
     }
     //get the list of all diatonic chords from the keySignature
    let chordList =  getAllDiatonicChords(keySignature);
+   let possible = [];
    //For every note in notes, look through each chord in chordList. If the current note is not contained in the current chord, then delete that chord 
    //from the chord list
-   for(let note =0; note< notes.length; note++){
+   //consider every note (first and second eigth notes)
+   for(let note = 0; note< notes.length; note++){
     let currNote = notes[note];
         for(let i=0; i< chordList.length; i++){
-            if(!chordList[i].includes(currNote)){
+            if(!chordList[i].includes(currNote.letter)){
                 chordList.splice(i, 1);
                 i--;
             }
+            
         }
    } 
-   if(chordList.length == 0){
+  
+   //push all the chords that were not eliminated into the possible chords array
+   for(let i = 0; i< chordList.length; i++){
+    possible.push(chordList[i]);
+   }
+   //same as above except that we are only considering notes that fall on the first half of the beat
+   let firstEigthsNotes = [];
+   let secondEigthsNotes = [];
+   for(let i =0; i< notes.length; i++){
+    if(notes[i].duration === "secondEigth"){
+      secondEigthsNotes.push(notes[i]);
+    }
+    else if(notes[i].duration === "firstEigth"){
+      firstEigthsNotes.push(notes[i]);
+    }
+    else{
+      firstEigthsNotes.push(notes[i]);
+      secondEigthsNotes.push(notes[i]);
+    }
+   }
+   
+   //replenish the chord list so that the chords we eliminated by mistake when considering both eigth notes are restored
+   chordList =  getAllDiatonicChords(keySignature);
+   for(let note = 0; note< firstEigthsNotes.length; note++){
+    let currNote = firstEigthsNotes[note];
+        for(let i=0; i< chordList.length; i++){
+            if(!chordList[i].includes(currNote.letter)){
+                chordList.splice(i, 1);
+                i--;
+            }
+            
+        }
+   } 
+   //push all the chords that were not eliminated into the possible chords array
+   for(let i = 0; i< chordList.length; i++){
+      possible.push(chordList[i]);
+   }
+
+   //for the second eigth notes
+   chordList =  getAllDiatonicChords(keySignature);
+   for(let note =0; note< secondEigthsNotes.length; note++){
+    let currNote = secondEigthsNotes[note];
+        for(let i=0; i< chordList.length; i++){
+            if(!chordList[i].includes(currNote.letter)){
+                chordList.splice(i, 1);
+                i--;
+            }
+            
+        }
+   } 
+   //push all the chords that were not eliminated into the possible chords array
+   for(let i = 0; i< chordList.length; i++){
+          possible.push(chordList[i]);
+   }
+
+
+   if(possible.length == 0){
     //there is a maj or min interval in the notes....
    let  isMajSecond;
     chordList = getAllDiatonicChords(keySignature);
@@ -349,8 +406,15 @@ export const getPossibleChords = (notes, keySignature) =>{
     //num unique notes is greater than 2... 
     
    }
-
-   return chordList;
+   //the possible chord array may contain duplicates so remove them
+   let uniqueSet = new Set();
+   for(let chord =0; chord< possible.length; chord++){
+    uniqueSet.add(possible[chord].join(","));
+   }
+   possible = Array.from(uniqueSet).map(el =>{
+    return el.split(",");
+   });
+   return possible;
    //return the chord list
 }
 //
@@ -364,11 +428,9 @@ const getChordsNames = (notes, keySignature) =>{
   //loop through the possible chords array and match the index that they occur at to the 
   for(let i = 0; i< possibleChords.length; i++){
     for(let j =0; j< diatonicChords.length; j++){
-      console.log(diatonicChords[j]);
-      console.log(possibleChords[i]);
       if(possibleChords[i].every(element => diatonicChords[j].includes(element))){
-       
-        let chordName = roots[j] + " " + chordQualities[j];
+        
+        let chordName = roots[j].join("") + " " + chordQualities[j];
         results.push(chordName);
        // possibleChords.splice(i, 1);
         break;
@@ -428,12 +490,14 @@ const getNoteWeights = (beatId, pieceObj, staff, keySignature ) =>{
 }
 
 export const analyzeBeat = (beatId, pieceObject, keySignature, consoleHistory, setConsoleHistory) =>{
-  console.log(JSON.stringify(pieceObject))
   //get all the notes in the beat 
-  console.log("selected beat: " + beatId)
+ 
   let allNotesMessage = `The notes in beat ${beatId} are: `;
   const allNotesArray = getChordByBeatId(beatId, pieceObject).totalChord;
-  allNotesMessage += allNotesArray.join(", ") + "\n";
+  const allNoteNames = allNotesArray.map((noteObj) =>{
+    return noteObj.letter;
+  });
+  allNotesMessage += allNoteNames.join(", ") + "\n";
 
   //get all the possible chords
   let possibleChords = "The possible chords for this beat are: ";
