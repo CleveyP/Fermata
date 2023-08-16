@@ -20,6 +20,9 @@ app.use(cors());
 app.use("/user", userRouter);
 app.use("/composition", compositionRouter);
 
+app.get("/", (req, res) =>{
+	res.send("hello test!!!");
+})
 
 
 

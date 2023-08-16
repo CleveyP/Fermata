@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-// const mongoUri = "mongodb+srv://root:battery99@cluster0.mu3nlyn.mongodb.net/?retryWrites=true&w=majority";
 const mongoUri = "mongodb://localhost:27017/?appName=MongoDB+Compass&directConnection=true&serverSelectionTimeoutMS=2000"
 
     async function connectMongo(){
