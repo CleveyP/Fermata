@@ -27,7 +27,7 @@ export const Home = () =>{
         const getSongs = async () =>{
              //get the username from universal cookie
         setUsername(cookies.get("username"));
-            const songList = await axios.post("http://localhost:8080/composition/getSongsByUsername", {username: cookies.get("username")});
+            const songList = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/composition/getSongsByUsername`, {username: cookies.get("username")});
             if(songList.data.success){
                 setSongList(songList.data.songsList);
             }
@@ -69,7 +69,7 @@ export const Home = () =>{
         //JSONStringify the Piece object into a json string
         //send all data to the backend
 
-        const res = await axios.post("http://localhost:8080/composition/createNewComposition", {
+        const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/composition/createNewComposition`, {
             songName: songName, 
             numberOfBars: numberOfBars,
             timeSignature: timeSignature,
@@ -144,7 +144,7 @@ const SongList = (props) =>{
 
     const handleDelete = async (e) =>{
         const songId = e.currentTarget.getAttribute('songid');
-        const deleteResult = await axios.post("http://localhost:8080/composition/delete", {songId: songId})
+        const deleteResult = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/composition/delete`, {songId: songId})
         //trigger rerendering of the song list
         props.refresh();
     }

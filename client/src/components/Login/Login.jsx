@@ -24,7 +24,7 @@ export const Login = (props) =>{
 
     const handleSubmit = async () =>{
         //make a request to the backend that will ask if the username and password exist in the database of users
-        const res = await axios.post("http://localhost:8080/user/login", {username: username, password: password});
+        const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/user/login`, {username: username, password: password});
         if(res.data.success){
             //set the username as a cookie
             cookies.set('username', username);

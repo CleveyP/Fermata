@@ -99,7 +99,7 @@ export const Composition = (props) => {
     const jsonComposition = JSON.stringify(pieceObject);
     //post the json array to the backend
     const res = await axios.post(
-      "http://localhost:8080/composition/saveComposition",
+      `${process.env.REACT_APP_BACKEND_URL}/composition/saveComposition`,
       {
         composition: jsonComposition,
         songId: props.songId,
@@ -118,7 +118,7 @@ export const Composition = (props) => {
       console.log("successfully saved the composition!");
       alert("saved successfully");
     } else {
-      console.log("failed to save the composition");
+      console.log("FAILED to save the composition");
       alert("could not save the composition!");
     }
   };
@@ -186,7 +186,7 @@ export const Composition = (props) => {
             <input
               type="range"
               min="50"
-              max="400"
+              max="150"
               step="1"
               value={bpm}
               onChange={handleBpmChange}
@@ -242,8 +242,8 @@ export const Composition = (props) => {
               <input
                 name="treble-volume"
                 type="range"
-                min={-10}
-                max={10}
+                min={-20}
+                max={20}
                 step={1}
                 value={trebleVolume}
                 onChange={(e) => setTrebleVolume(e.target.value)}
@@ -296,8 +296,8 @@ export const Composition = (props) => {
               <input
                 name="bass-volume"
                 type="range"
-                min={-10}
-                max={10}
+                min={-20}
+                max={20}
                 step={1}
                 value={bassVolume}
                 onChange={(e) => setBassVolume(e.target.value)}
