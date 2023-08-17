@@ -10,6 +10,7 @@ const mongoose = require("mongoose");
 const UsersModel = require("./Models/Users");
 const userRouter = require('./routes/userRoutes');
 const compositionRouter = require('./routes/compositionRoutes');
+const path = require("path")
 connectMongo();
 
 let app = express();
@@ -19,6 +20,15 @@ app.use(bodyParser.json({limit: '1mb'}));
 app.use(cors());
 app.use("/user", userRouter);
 app.use("/composition", compositionRouter);
+
+// Serve static files from the React build directory
+app.use(express.static(path.join(__dirname, '../client/build')));
+
+// Handle requests that don't match any routes by serving the index.html file
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
+});
+
 
 app.get("/", (req, res) =>{
 	res.send("hello test!!!");
