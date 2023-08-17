@@ -7,7 +7,11 @@ const register = async (req, res) =>{
     //get the username and passowrd from request object
     const username = req.body.username;
     const password = req.body.password;
-
+    if(username==undefined || password == undefined){
+      console.log(username, password);
+      res.send({success: false, message: "username or password was undefined"})
+    }
+    
     //check the database to make sure that the username is available
     const result = await UsersModel.findOne({username: username}).exec();
     if(result){

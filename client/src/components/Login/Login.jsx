@@ -3,7 +3,6 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { cookies } from "../../App";
 import "./Login.css";
-
 export const Login = (props) =>{
 
     const [username, setUsername] = useState("");
@@ -23,6 +22,7 @@ export const Login = (props) =>{
 
 
     const handleSubmit = async () =>{
+        console.log(`${process.env.REACT_APP_BACKEND_URL}/user/login`)
         //make a request to the backend that will ask if the username and password exist in the database of users
         const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/user/login`, {username: username, password: password});
         if(res.data.success){
