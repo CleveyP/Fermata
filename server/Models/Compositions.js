@@ -47,6 +47,38 @@ const CompositionsSchema = new Schema({
     bassVolume: {
         type: Number,
         default: 0
+    },
+    trebleAtt: {
+        type: Number,
+        default: 0
+    },
+    trebleRel: {
+        type: Number,
+        default: 0
+    },
+    trebleSus: {
+        type: Number,
+        default: 0.2
+    },
+    trebleMento: {
+        type: Number,
+        default: 0
+    },
+    bassAtt: {
+        type: Number,
+        default: 0
+    },
+    bassRel: {
+        type: Number,
+        default: 0
+    },
+    bassSus: {
+        type: Number,
+        default: 0.3
+    },
+    bassMento: {
+        type: Number,
+        default: 0
     }
 
 })

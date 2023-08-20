@@ -12,8 +12,8 @@ export const EditComposition = () =>{
     const [numBars, setNumBars] = useState(8); //these are not getting reset for some reason
     const [timeSig, setTimeSig] = useState(0);
     const [compositionObj, setCompositionObj] = useState({}); //a composition array is a json array of staves > measures > beats > notes
-    const [optionsObj, setOptionsObj] = useState({})
-
+    const [optionsObj, setOptionsObj] = useState({});
+    const [attRelObj, setAttRelObj] = useState({});
     useEffect( () =>{
         if(!songId){
             return;
@@ -40,7 +40,24 @@ export const EditComposition = () =>{
                     trebleVolume: res.data.trebleVolume,
                     bassVolume: res.data.bassVolume
                 };
+                let attRelOptions = {
+                    treble: {
+                        att: res.data.trebleAtt || 0,
+                        rel: res.data.trebleRel || 0,
+                        sus: res.data.trebleSus || 0.2,
+                        mento: res.data.trebleMento || 0
+                    },
+                    bass: {
+                        att: res.data.bassAtt || 0,
+                        rel: res.data.bassRel || 0,
+                        sus: res.data.bassSus || 0.2,
+                        mento: res.data.bassMento || 0
+                    }
+
+                }
+                console.log(attRelOptions.treble.att)
                 setOptionsObj({...newOptions});
+                setAttRelObj({...attRelOptions});
                 setCompositionObj(JSON.parse(res.data.compositionArray));
             }
         }
@@ -54,7 +71,7 @@ export const EditComposition = () =>{
     return (
         <div className="edit-composition-container">
             <h1>{songTitle}</h1>
-            <Composition compositionObj={compositionObj} numMeasures={numBars} timeSig={timeSig} songId={songId} optionsObj={optionsObj}/>
+            <Composition compositionObj={compositionObj} numMeasures={numBars} timeSig={timeSig} songId={songId} optionsObj={optionsObj} attRelObj={attRelObj}/>
         </div>
     );
 

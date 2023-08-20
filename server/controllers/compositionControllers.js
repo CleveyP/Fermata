@@ -53,12 +53,22 @@ const getSongData = async (req, res) =>{
           timeSig: songData.timeSignature,
           compositionArray: songData.compositionArray,
           bpm: songData.bpm,
+
           trebleSynth: songData.trebleSynth,
           bassSynth: songData.bassSynth,
           trebleEffects: songData.trebleEffects,
           bassEffects: songData.bassEffects,
           trebleVolume: songData.trebleVolume,
-          bassVolume: songData.bassVolume
+          bassVolume: songData.bassVolume,
+
+          trebleAtt: songData.trebleAtt,
+          trebleRel: songData.trebleRel,
+          trebleSus: songData.trebleSus,
+          trebleMento: songData.trebleMento,
+          bassAtt: songData.bassAtt,
+          bassRel: songData.bassRel,
+          bassSus: songData.bassSus,
+          bassMento: songData.bassMento
         });
     }
     else{
@@ -105,7 +115,16 @@ const saveComposition = async (req, res) =>{
     trebleVolume: req.body.trebleVolume,
     bassVolume: req.body.bassVolume,
     trebleEffects: req.body.trebleEffects,
-    bassEffects: req.body.bassEffects 
+    bassEffects: req.body.bassEffects,
+
+    trebleAtt: req.body.attRel.treble.att,
+    trebleRel: req.body.attRel.treble.rel,
+    trebleSus: req.body.attRel.treble.sus,
+    trebleMento: req.body.attRel.treble.mento,
+    bassAtt: req.body.attRel.bass.att,
+    bassRel: req.body.attRel.bass.rel,
+    bassSus: req.body.attRel.bass.sus,
+    bassMento: req.body.attRel.bass.mento
   });
  const saveResult =  await compToUpdate.save();
  if(saveResult)

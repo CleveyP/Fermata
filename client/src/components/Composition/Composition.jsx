@@ -38,7 +38,7 @@ export const Composition = (props) => {
   const [bassVolume, setBassVolume] = useState(
     props.optionsObj.bassVolume || 0
   );
-  const [attRel, setAttRel] = useState({treble: {att: 0, rel: 0, sus: 0.2, mento: 0}, bass: {att: 0, rel: 0, sus: .2, mento: 0}})
+  const [attRel, setAttRel] = useState( {treble: {att: 0, rel: 0, sus: 0.2, mento: 0}, bass: {att: 0, rel: 0, sus: .2, mento: 0}})
   const [trebleEffects, setTrebleEffects] = useState(
     props.optionsObj.trebleEffects || []
   );
@@ -71,7 +71,9 @@ export const Composition = (props) => {
     setTrebleEffects(props.optionsObj.trebleEffects || []);
     setBassEffects(props.optionsObj.bassEffects || []);
     setStaffs([...newPiece.staffsArray]);
-  }, [props.timeSig, props.bassEffects, props.trebleEffects]);
+    if(props.attRelObj.treble)
+      setAttRel(props.attRelObj);
+  }, [props.timeSig, props.bassEffects, props.trebleEffects, props.attRelObj]);
 
   const handleBpmChange = (e) => {
     setBpm(e.target.value);
@@ -110,6 +112,7 @@ export const Composition = (props) => {
         bassVolume: bassVolume,
         trebleEffects: trebleEffects,
         bassEffects: bassEffects,
+        attRel: attRel
       }
     );
 
