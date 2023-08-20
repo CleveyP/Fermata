@@ -119,3 +119,22 @@ color: white;
 }
 
 
+@media screen and (max-width: 750px) {
+    .music-controls{
+        flex-direction:column;
+    }
+    .music-controls > div{
+        width: 100%;
+    }
+    .synth-controls{
+        width: 100%;
+    }
+    .attack-release-display {
+        margin-left: 5%;
+    }
+    .effects-box > div{
+        width: 100%;
+    }
+  }
+
+

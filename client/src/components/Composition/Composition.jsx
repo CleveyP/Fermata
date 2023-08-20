@@ -139,7 +139,6 @@ export const Composition = (props) => {
         >
           Home
         </button>
-        <button onClick={() => getChordByBeatId(65, pieceObject)}>test</button>
       </div>
       { isAIMode ? <AIControls setActiveBeat={setActiveBeat} composition={pieceObject}/> :
       <div className="music-controls">

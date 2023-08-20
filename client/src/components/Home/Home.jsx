@@ -42,7 +42,8 @@ export const Home = () =>{
     }
 
     const handleLogout = () =>{
-        //delete the username cookie 
+        //delete the username cookie
+        cookies.remove("username");
         //transport user back to the login page
         navigate("/");
     }
@@ -152,7 +153,6 @@ const SongList = (props) =>{
     const handleClick = async (e) =>{
         //get the songId of the clicked song
         const songId = e.currentTarget.getAttribute('songid');
-        console.log("the clicked song's id is: " + songId);
         
         //navigate to the editComposition component using the song's id
         navigate(`/editComposition/${songId}`);
