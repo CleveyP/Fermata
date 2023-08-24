@@ -37,7 +37,7 @@ export const Register = () =>{
 
         //make a request to the backend that will ask if the username and password exist in the database of users
         //if it does not exist, register the new username and password
-        const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/user/register`, {username: username, password: password});
+        const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/user/register`, {username: username, password: password}, {withCredentials: true});
         if(res.data.success){
              //set the username as a cookie
              cookies.set('username', username);

@@ -7,17 +7,28 @@ const {connectMongo} = require('./config/mongoConnection');
 const cors = require('cors');
 const bcrypt = require('bcrypt');
 const mongoose = require("mongoose");
+const mongoSession = require("./config/session");
 const UsersModel = require("./Models/Users");
 const userRouter = require('./routes/userRoutes');
 const compositionRouter = require('./routes/compositionRoutes');
 const path = require("path")
+
+
+//connect to the mongo db
 connectMongo();
 
 let app = express();
+
 const router = express.Router();
 // app.use(express.json());
 app.use(bodyParser.json({limit: '1mb'}));
-app.use(cors());
+app.use(cors({
+	origin: true,
+	credentials: true
+}));
+//connect the express session to the mongodb so the session is stored in the database not in the server memory.
+mongoSession(app);
+
 app.use("/user", userRouter);
 app.use("/composition", compositionRouter);
 

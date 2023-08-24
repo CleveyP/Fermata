@@ -27,7 +27,9 @@ export const Home = () =>{
         const getSongs = async () =>{
              //get the username from universal cookie
         setUsername(cookies.get("username"));
-            const songList = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/composition/getSongsByUsername`, {username: cookies.get("username")});
+            const songList = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/composition/getSongsByUsername`,
+             {username: cookies.get("username")},
+             {withCredentials: true});
             if(songList.data.success){
                 setSongList(songList.data.songsList);
             }
@@ -41,11 +43,18 @@ export const Home = () =>{
         setRefreshSongList(!refreshSongList);
     }
 
-    const handleLogout = () =>{
+    const handleLogout = async () =>{
         //delete the username cookie
-        cookies.remove("username");
+        //cookies.remove("username");
         //transport user back to the login page
-        navigate("/");
+        const result =  await axios.get(`${process.env.REACT_APP_BACKEND_URL}/user/logout`,  {withCredentials: true});
+        if(result.data.success){
+            //delete the username cookie
+            cookies.remove("username");
+            navigate("/");
+        }
+        else
+            alert("ERR: Could not log user out!");
     }
 
 
@@ -76,7 +85,7 @@ export const Home = () =>{
             timeSignature: timeSignature,
             username: username,
             compositionArray: json
-    });
+    },  {withCredentials: true});
         //if everything goes as planned
         //navigate to the new view of the new song
         if(res.data.success){
@@ -145,7 +154,7 @@ const SongList = (props) =>{
 
     const handleDelete = async (e) =>{
         const songId = e.currentTarget.getAttribute('songid');
-        const deleteResult = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/composition/delete`, {songId: songId})
+        const deleteResult = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/composition/delete`, {songId: songId}, {withCredentials: true})
         //trigger rerendering of the song list
         props.refresh();
     }

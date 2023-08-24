@@ -21,7 +21,7 @@ export const EditComposition = () =>{
         //use the songId to get all the info about song from database
         const getSongData = async () =>{
            
-            const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/composition/getSongData/` + songId);
+            const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/composition/getSongData/` + songId,  {withCredentials: true});
             if(!res.data.success){
                 console.log("error in fetching song data");
                 return;

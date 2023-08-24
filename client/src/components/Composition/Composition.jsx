@@ -113,7 +113,8 @@ export const Composition = (props) => {
         trebleEffects: trebleEffects,
         bassEffects: bassEffects,
         attRel: attRel
-      }
+      },
+      {withCredentials: true}
     );
 
     //check if it was a succes
@@ -163,7 +164,7 @@ export const Composition = (props) => {
                 );
               } else {
                 setIsPaused(true);
-                pauseSong(bpm);
+                pauseSong(bpm); 
               }
             }}
           >

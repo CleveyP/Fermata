@@ -8,7 +8,6 @@ const createNewComposition = async (req, res) =>{
     const timeSig = req.body.timeSignature;
     const username = req.body.username;
     const compositionArray = req.body.compositionArray;
-    console.log(songName, numBars, timeSig);
 
   //make sure that the name of the composition does not exist for that user.
   let nameSearchResult = await CompositionsModel.findOne({author: username, title: songName});
@@ -40,7 +39,6 @@ const createNewComposition = async (req, res) =>{
 
 const getSongData = async (req, res) =>{
     const songId = req.params.songId;
-   
     //query database by songId
     //get the song data and return to user
     const songData = await CompositionsModel.findById(songId);
@@ -79,7 +77,6 @@ const getSongData = async (req, res) =>{
 const getSongsByUsername = async (req, res) =>{
   //get the username from the req object
   const username = req.body.username;
-  console.log("username" + username);
   //get the compositions titles and songIds that were made by the username user
 
 const authorQuery = { author: username }; 
@@ -137,7 +134,7 @@ else
 const deleteComposition = async (req, res) =>{
   //try to delete a composition document in the CompositionModel in mongodb
   const songId = req.body.songId;
-  console.log("inside delete composition the songId: " + songId);
+  console.log("deleting the song with songId: " + songId);
   //try to delete the document that matches the song id in the composition model
   const deleteResult = await CompositionsModel.findByIdAndRemove({ _id: songId});
   if(deleteResult){

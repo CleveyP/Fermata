@@ -16,6 +16,7 @@ const register = async (req, res) =>{
     const result = await UsersModel.findOne({username: username}).exec();
     if(result){
         res.send({success: false, message: "username is already taken"});
+        return;
     }
     // if we get here, username is available
     //hash password
@@ -27,8 +28,9 @@ const register = async (req, res) =>{
       username: username,
       password: hash
     });
-    console.log(newUser);
     console.log("created new user: " + username);
+    //add the user as authenticated in the session
+    req.session.isAuthentic = true;
     res.send({success: true, message: "Added new user " + username});
   } catch (err) {
     console.log(err);
@@ -43,23 +45,43 @@ const login =  async (req, res) =>{
 
     //check the database to see if this credential combo matches
     const result = await UsersModel.findOne({username: username});
-    console.log(result);
     if(!result){
         console.log("user " + username + "does not exist in database");
         res.send({success: false, username: "user does not exist"});
-        return; //don't know why this is necessary
+        return; 
     }
     //get the hashed password from that user
     const dbHash = result.password;
     //if the password is correct 
     if(bcrypt.compareSync(password, dbHash )){
-        res.send({success: true, username: username});
+        //add the user as authenticated in the session
+        req.session.isAuthentic = true;
+        res.send({success: true, username: username})
     }
     else{
         res.send({success: false, username: "not logged in"});
-    }
-
-       
+    }       
 }
 
-module.exports = {register, login}
+
+const logout = async (req, res) => {
+ 
+  console.log(JSON.stringify(req.session));
+  req.session.isAuthentic = false;
+  
+  req.session.destroy((error) => {
+    if (error) {
+      console.log(error);
+      res.send({success: false});
+    }
+    else {
+      console.log("logged out successfully");
+      console.log(JSON.stringify(req.session));
+      res.clearCookie("fermat");
+      res.send({success: true});
+    }
+  });
+}
+
+
+module.exports = {register, login, logout}
