@@ -237,6 +237,8 @@ export const Composition = (props) => {
               <option value="AM">AM</option>
               <option value="MONO">MONO</option>
               <option value="DUO">DUO</option>
+              <option value="GRAND">GRAND</option>
+              <option value="BASS">BASS</option>
             </select>
             <div className="treble-vol-box">
               <label htmlFor="treble-volume">
@@ -293,6 +295,8 @@ export const Composition = (props) => {
               <option value="AM">AM</option>
               <option value="MONO">MONO</option>
               <option value="DUO">DUO</option>
+              <option value="GRAND">GRAND</option>
+              <option value="BASS">BASS</option>
             </select>
             <div className="bass-vol-box">
               <label htmlFor="bass-volume">Bass Volume: {bassVolume}</label>

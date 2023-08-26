@@ -6,7 +6,8 @@ let currentChordIndex = 0;
 let scheduledEvents = [];
 let now = 0;
 let beginning =0;
-
+let treblePoly;
+let bassPoly;
 
 //create an array of notes to be played out of the composition array
 export const getNotesArrays = (composition, bpm) => {
@@ -249,8 +250,106 @@ export const getNotesArrays = (composition, bpm) => {
   return ret;
 };
 
+
+//return a polysynth that wraps around a casio electric piano sample.
+  async function createGrandPianoSampler() {
+    return new Promise((resolve) => {
+      const sampler = new Tone.Sampler({
+        urls: {
+          G1: "/grandG1.mp3",
+          G2: "/grandG2.mp3",
+          C5: "/grandC5.mp3",
+          E4: "/grandE4.mp3"
+        },
+        onload: () => {
+          // Resolve with the PolySynth
+          resolve(sampler);
+        },
+      });
+    });
+  }
+
+  //resolves to a sample synth that sounds like a bass. Look at the Tone.js documentation for Tone.Sample to see its methods. 
+  //for most purposes, this sample is interchangeable with a Tone.PolySynth object.
+  async function createBassSampler() {
+    return new Promise((resolve) => {
+      const sampler = new Tone.Sampler({
+        urls: {
+          G1: "/BassG1.mp3",
+          G2: "/BassG2.mp3",
+          C5: "/BassC5.mp3",
+          E4: "/BassE4.mp3"
+        },
+        onload: () => {
+          // Resolve with the PolySynth
+          resolve(sampler);
+        },
+      });
+    });
+  }
+
+
 //take in teh composition and apply the tempo, syths and effects. Play the composition.
-export const playSong = (composition, bpm, trebleSynth, bassSynth, effectsArrays, eq, setActiveBeat, attRelObj) => {
+export const playSong = async (composition, bpm, trebleSynth, bassSynth, effectsArrays, eq, setActiveBeat, attRelObj) => {
+    //if the trebleSynth or bassSynth are samples then:
+    let trebleSample;
+    let bassSample;
+    if(trebleSynth === "GRAND"){
+      //load the grand piano
+      try{
+      trebleSample =  await createGrandPianoSampler();
+      trebleSample.release = attRelObj.treble.rel;
+      trebleSample.attack=attRelObj.treble.att;
+      trebleSample.toDestination();
+      }
+      catch (error) {
+        console.error("Error in createPolySynth:", error);
+      }
+    }
+    if(bassSynth === "GRAND"){
+      //load the grand piano
+      try{
+      bassSample =  await createGrandPianoSampler();
+      bassSample.release = attRelObj.bass.rel;
+      bassSample.attack=attRelObj.bass.att;
+      bassSample.toDestination();
+      }
+      catch(error){
+        console.log("error in setting up grand piano for the bass", error);
+      }
+    }
+
+    if(trebleSynth === "BASS"){
+      //load the bass
+      try{
+      trebleSample =  await createBassSampler();
+      trebleSample.release = attRelObj.treble.rel;
+      trebleSample.attack=attRelObj.treble.att;
+      trebleSample.toDestination();
+      }
+      catch (error) {
+        console.error("Error in createPolySynth:", error);
+      }
+    }
+
+    if(bassSynth === "BASS"){
+      //load the bass
+      try{
+      bassSample =  await createBassSampler();
+      bassSample.release = attRelObj.bass.rel;
+      bassSample.attack=attRelObj.bass.att;
+      bassSample.toDestination();
+      }
+      catch(error){
+        console.log("error in setting up bass effect for the bass", error);
+      }
+    }
+
+
+    //if the audioContext is suspended, then restart it. 
+    if(Tone.context.state !== "running")
+      Tone.start();
+
     const beatTime = (60 / bpm ); //get the time in seconds of one beat
     const res = getNotesArrays(composition, bpm);  // [[note 1 note 2 note 3], [note 2 note 3], ],  [[note 1 note 2 note 3], [note 2 note 3], ]
     const trebleArray = res[0];
@@ -304,10 +403,15 @@ export const playSong = (composition, bpm, trebleSynth, bassSynth, effectsArrays
         bassEffects.push(effect);
     }
    
+    //free previous polysynths 
+    if(treblePoly && (!treblePoly.disposed)){
+      console.log("disposing resources")
+      treblePoly.dispose();
+    }
+    if(bassPoly && (!bassPoly.disposed)){
+      bassPoly.dispose();
+    }
 
-    let treblePoly;
-    let bassPoly;
-    let newSynth;
     //create two poly synths capable of playing multiple notes at the same time and mount them to the client's speakers 
     //the type of synth depends on the 3rd and 4th args to playSong function
     switch(trebleSynth){
@@ -326,20 +430,23 @@ export const playSong = (composition, bpm, trebleSynth, bassSynth, effectsArrays
         case "DUO":
           treblePoly = new Tone.PolySynth(Tone.DuoSynth).toDestination();
             break;
+        case "GRAND":
+        case "BASS":
+          treblePoly = trebleSample;
+          break;
     }
-    //apply the attack release sustain that the user set to the treble synth
-    treblePoly.options.envelope.attack = Number(attRelObj.treble.att);
-    treblePoly.options.envelope.release = attRelObj.treble.rel;
-    treblePoly.options.envelope.sustain = attRelObj.treble.sus;
-    treblePoly.options.portamento = Number(attRelObj.treble.mento);
-    console.log(treblePoly.options)
+    if( (trebleSynth !== "GRAND") && (trebleSynth !== "BASS") ){
+      //apply the attack release sustain that the user set to the treble synth
+      treblePoly.options.envelope.attack = Number(attRelObj.treble.att);
+      treblePoly.options.envelope.release = attRelObj.treble.rel;
+      treblePoly.options.envelope.sustain = attRelObj.treble.sus;
+      treblePoly.options.portamento = Number(attRelObj.treble.mento);
+    }
     switch(bassSynth){
         case "FM":
-         
           bassPoly = new Tone.PolySynth(Tone.FMSynth).toDestination();
             break;
         case "AM":
-          
           bassPoly = new Tone.PolySynth(Tone.AMSynth).toDestination();
             break;
         case "SYNTH":
@@ -351,16 +458,20 @@ export const playSong = (composition, bpm, trebleSynth, bassSynth, effectsArrays
           bassPoly = new Tone.PolySynth(Tone.MonoSynth).toDestination();
             break;
         case "DUO":
-          
           bassPoly = new Tone.PolySynth( Tone.DuoSynth).toDestination();
+              break;
+        case "GRAND":
+        case "BASS":
+              bassPoly = bassSample;
               break;
     }
     //apply the attack release sustain that the user set to the treble synth
-    console.log(bassPoly.toString);
+    if((bassSynth !== "GRAND") && (bassSynth !== "BASS")){
     bassPoly.options.envelope.attack = Number(attRelObj.bass.att);
     bassPoly.options.envelope.release = attRelObj.bass.rel;
     bassPoly.options.envelope.sustain = attRelObj.bass.sus;
     bassPoly.options.portamento = Number(attRelObj.bass.mento);
+    }
    // apply the equalizer to the synths
     treblePoly.volume.value = eq[0];
     bassPoly.volume.value = eq[1];
@@ -374,8 +485,8 @@ export const playSong = (composition, bpm, trebleSynth, bassSynth, effectsArrays
     }
 
     //let each synth be able to play 9 notes simultaniously
-    treblePoly.maxPolyphony = 9;
-    bassPoly.maxPolyphony = 9;
+    treblePoly.maxPolyphony = 15;
+    bassPoly.maxPolyphony = 15;
 
   
     //loop through the treble array and for each beat (chord) that contains notes, trigger every note in the chord with its pitch duration and startTime
@@ -392,11 +503,11 @@ export const playSong = (composition, bpm, trebleSynth, bassSynth, effectsArrays
 
     Tone.Destination.mute = false;
     //get the current time as our start time to offset from.
-     now = Tone.now() - beginning;
-
-     if(beginning===0 ){
-      beginning = now;
-     }
+    // now = Tone.now() - beginning;
+    now = Tone.now();
+    //  if(beginning===0 ){
+    //   beginning = now;
+    //  }
      
     
 
@@ -431,10 +542,24 @@ export const playSong = (composition, bpm, trebleSynth, bassSynth, effectsArrays
           scheduledEvents.push(event);
         }
   }
+
+
+  //TODO: move this into the nested for loop and figure out the total time of the piece. (should be the delta between start time and the last 
+  //scheduledEvents time. do a set timeout using this delta and dispose of the synths.)
+  //  if(!treblePoly.disposed){
+  //    console.log("disposing")
+  //   treblePoly.dispose();
+  //  }
+    
+  // if(!bassPoly.disposed){
+  //   bassPoly.dispose();
+  // }
+   
+
   if(wasPaused){
-    console.log("It was paused!");
     currentChordIndex = 0;
   }
+  
 }
 
 

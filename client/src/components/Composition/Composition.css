@@ -1,140 +1,136 @@
-.composition{
-    height: 92%;
-    width: 100%;
-    border: solid black 3px;
-    background-color: darkgreen;
-    overflow-y: scroll;
+.composition {
+  height: 92%;
+  width: 100%;
+  border: solid black 3px;
+  background-color: darkgreen;
+  overflow-y: scroll;
 }
 
-.staff{
-    display: flex;
-    flex-direction: row;
-    height: 19%;
-    width: 98%;
-    background-color: white;
-    border: 3px solid black;
-    margin: 35px 10px 35px 5px;
-
+.staff {
+  display: flex;
+  flex-direction: row;
+  height: 19%;
+  width: 98%;
+  background-color: white;
+  border: 3px solid black;
+  margin: 35px 10px 35px 5px;
+  padding-bottom: 10px;
 }
 
-img{
-    height: 100%;
-    width: 60px;
+img {
+  height: 100%;
+  width: 60px;
 }
 
-.music-controls{
-    margin: auto;
-    height: fit-content;
-    width: 95%;
-    border: 5px solid white;
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-    background-color: darkred;
+.music-controls {
+  margin: auto;
+  height: fit-content;
+  width: 95%;
+  border: 5px solid white;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  background-color: darkred;
 }
 
-.music-controls select{
-    height: 40px;
-    width: 100px;
+.music-controls select {
+  height: 40px;
+  width: 100px;
 }
 
-.synth-controls{
-    display: flex;
-    width: 30%;
-    border: solid black 3px;
-    padding: 10px;
-    background-color: burlywood;
+.synth-controls {
+  display: flex;
+  width: 30%;
+  border: solid black 3px;
+  padding: 10px;
+  background-color: burlywood;
 }
 
-.effects-container{
-    background-color: burlywood;
-    border: 3px solid black;
-    padding: 10px;
+.effects-container {
+  background-color: burlywood;
+  border: 3px solid black;
+  padding: 10px;
 }
 
-.effects-box{
-    display: flex;
-    border: 3px solid black;
+.effects-box {
+  display: flex;
+  border: 3px solid black;
 }
 
-.bpm-box{
-    display: flex;
+.bpm-box {
+  display: flex;
 }
 
-
-.playback-controls{
-    display: flex;
-    flex-direction: row;
-    height: 50px;
-    width: fit-content;
-    justify-content: space-evenly;
-    align-items: baseline;
-    background-color: burlywood;
-    border: 3px solid black;
+.playback-controls {
+  display: flex;
+  flex-direction: row;
+  height: 50px;
+  width: fit-content;
+  justify-content: space-evenly;
+  align-items: baseline;
+  background-color: burlywood;
+  border: 3px solid black;
 }
 
-.playback-button{
-    height: 40px;
-    width: 40px;
-    color: black;
-    background-color: transparent;
-    border: none;
+.playback-button {
+  height: 40px;
+  width: 40px;
+  color: black;
+  background-color: transparent;
+  border: none;
 }
 
-.playback-button:hover{
-    color: grey;
+.playback-button:hover {
+  color: grey;
 }
 
-.attack-release-controls{
-    display: flex;
-    background-color: navy;
-    width: 93%;
-    margin: auto;
-    border: black solid 3px;
+.attack-release-controls {
+  display: flex;
+  background-color: navy;
+  width: 93%;
+  margin: auto;
+  border: black solid 3px;
 }
 
-.attack-release-controls input{
-    appearance: slider-vertical;
-    height: 50px;
-    width: 10px;
+.attack-release-controls input {
+  appearance: slider-vertical;
+  height: 50px;
+  width: 10px;
 }
-.attack-release-controls label{
-    writing-mode: vertical-rl;
-text-orientation: upright;
-font-size: 9px;
-letter-spacing: .01px;
-color: white;
-}
-
-.attack-release-display{
-    margin-left: 20%;
+.attack-release-controls label {
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  font-size: 9px;
+  letter-spacing: 0.01px;
+  color: white;
 }
 
-.attack-release-display p{
-    color: white;
-    height: fit-content;
-    font-size: 10px;
-    width: 100%;
-    margin:0;
+.attack-release-display {
+  margin-left: 20%;
 }
 
+.attack-release-display p {
+  color: white;
+  height: fit-content;
+  font-size: 10px;
+  width: 100%;
+  margin: 0;
+}
 
 @media screen and (max-width: 750px) {
-    .music-controls{
-        flex-direction:column;
-    }
-    .music-controls > div{
-        width: 100%;
-    }
-    .synth-controls{
-        width: 100%;
-    }
-    .attack-release-display {
-        margin-left: 5%;
-    }
-    .effects-box > div{
-        width: 100%;
-    }
+  .music-controls {
+    flex-direction: column;
   }
-
-
+  .music-controls > div {
+    width: 100%;
+  }
+  .synth-controls {
+    width: 100%;
+  }
+  .attack-release-display {
+    margin-left: 5%;
+  }
+  .effects-box > div {
+    width: 100%;
+  }
+}
