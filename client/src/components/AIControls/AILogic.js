@@ -3,9 +3,12 @@
 
 import { chordsAndScales, chordQualities, deepCopyArray } from "./chordsAndScales";
 
-
+//values to calculate the weights of note placements.
 const NUMBER_OF_NOTES_IN_STAFF = 9;
 const  NO_CHORD_PENALTY = -5;
+
+
+
 //@param beatId is the id of the treble beat NOT ever the bass beat id
 //returns all the notes in a beat including both treble and bass chords as an object: {trebleChord: [{'A', "firstEigth"}], bassChord: ['B', 'C'], totalChord: ['A', 'B', 'C']}
 export const getChordByBeatId = (beatId, pieceObj) =>{
@@ -448,13 +451,13 @@ const getChordsNames = (notes, keySignature) =>{
 //given a beat id and composition and staff, returns an array of all possible notes that could be placed and their corresponding values
 //the array is sorted by value in descending order.  
 const getNoteWeights = (beatId, pieceObj, staff, keySignature ) =>{
-    let diatonicNotes = getAllDiatonicNotes(keySignature);
+    let diatonicNotes = getAllDiatonicNotes(keySignature);    
     let notesWeights = [];
     //get the chord that already exists in that beat
     const chordObj  = getChordByBeatId(beatId, pieceObj);
    let trebleNotes = [...chordObj.trebleChord];
    let bassNotes = [...chordObj.bassChord];
-   let totalNotes = [...chordObj.totalChord];
+   let totalNotes = [...chordObj.totalChord];  
    let staffNotes = (staff === "treble") ? trebleNotes : bassNotes;
    
          //if the beat that the user wants a note placed in already has two notes
