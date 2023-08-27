@@ -276,7 +276,7 @@ export const playSong = async (composition, bpm, trebleSynth, bassSynth, effects
     //if the trebleSynth or bassSynth are samples then:
     let trebleSample;
     let bassSample;
-
+    
     if(trebleSynth.substring(0, 6) === "SAMPLE"){
       //load the grand piano
       try{
@@ -395,7 +395,8 @@ export const playSong = async (composition, bpm, trebleSynth, bassSynth, effects
           treblePoly = trebleSample;
           break;
     }
-    if((trebleSynth.substring(0, 6) !== "SAMPLE") && (trebleSynth.substring(0,6) !== "SAMPLE")){
+    if((trebleSynth.substring(0, 6) !== "SAMPLE")){
+      console.log(" the substring is " + trebleSynth.substring(0,6));
       //apply the attack release sustain that the user set to the treble synth
       treblePoly.options.envelope.attack = Number(attRelObj.treble.att);
       treblePoly.options.envelope.release = attRelObj.treble.rel;
@@ -428,7 +429,8 @@ export const playSong = async (composition, bpm, trebleSynth, bassSynth, effects
               break;
     }
     //apply the attack release sustain that the user set to the treble synth
-    if((bassSynth.substring(0, 6) !== "SAMPLE") && (bassSynth.substring(0,6) !== "SAMPLE")){
+    if((bassSynth.substring(0, 6) !== "SAMPLE")){
+      console.log(" the substring is " + bassSynth.substring(0,6));
     bassPoly.options.envelope.attack = Number(attRelObj.bass.att);
     bassPoly.options.envelope.release = attRelObj.bass.rel;
     bassPoly.options.envelope.sustain = attRelObj.bass.sus;

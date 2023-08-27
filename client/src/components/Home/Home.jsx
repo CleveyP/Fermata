@@ -174,7 +174,6 @@ const SongList = (props) =>{
             <div className="songs-list">
             {
                 props.songList.map((song) =>{
-                    console.log(song._id);
                     return (
                     <div className = "song-item" >
                         <p songid={song._id}  onClick={(e) => {handleClick(e)}}>{song.title}</p>

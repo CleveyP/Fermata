@@ -450,7 +450,7 @@ const getChordsNames = (notes, keySignature) =>{
 
 //given a beat id and composition and staff, returns an array of all possible notes that could be placed and their corresponding values
 //the array is sorted by value in descending order.  
-const getNoteWeights = (beatId, pieceObj, staff, keySignature ) =>{
+export const getNoteWeights = (beatId, pieceObj, staff, keySignature ) =>{
     let diatonicNotes = getAllDiatonicNotes(keySignature);    
     let notesWeights = [];
     //get the chord that already exists in that beat

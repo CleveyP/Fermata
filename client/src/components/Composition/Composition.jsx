@@ -138,6 +138,7 @@ export const Composition = (props) => {
         </button>
         <button
           onClick={() => {
+            toBeginning(bpm, setActiveBeat);
             navigate("/home");
           }}
         >
