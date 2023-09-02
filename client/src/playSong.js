@@ -254,18 +254,26 @@ export const getNotesArrays = (composition, bpm) => {
    //resolves to a sample synth that sounds like the instrument named @param instrument. Look at the Tone.js documentation for Tone.Sample to see its methods. 
   //for most purposes, this sample is interchangeable with a Tone.PolySynth object.
   async function createSampler(instrument) {
-    return new Promise((resolve) => {
+	console.log("inside createSampler" + instrument.substring(7));
+    return new Promise((resolve, reject) => {
       const sampler = new Tone.Sampler({
         urls: {
-          G1: `/${instrument.substring(7)}G1.mp3`,
-          G2: `/${instrument.substring(7)}G2.mp3`,
-          C5: `/${instrument.substring(7)}C5.mp3`,
-          E4: `/${instrument.substring(7)}E4.mp3`
+          G1: `../../${instrument.substring(7)}G1.mp3`,
+          G2: `../../${instrument.substring(7)}G2.mp3`,
+          C5: `../../${instrument.substring(7)}C5.mp3`,
+          E4: `../../${instrument.substring(7)}E4.mp3`
         },
         onload: () => {
           // Resolve with the PolySynth
+	console.log("successfully loaded!");
           resolve(sampler);
         },
+onerror: (error) => {
+    console.error("Error loading samples:", error);
+    reject(error); // Reject the promise on error
+  },
+
+
       });
     });
   }
@@ -280,6 +288,7 @@ export const playSong = async (composition, bpm, trebleSynth, bassSynth, effects
     if(trebleSynth.substring(0, 6) === "SAMPLE"){
       //load the grand piano
       try{
+	console.log("trying to load sample");
         trebleSample =  await createSampler(trebleSynth);
         trebleSample.release = attRelObj.treble.rel;
         trebleSample.attack=attRelObj.treble.att;
