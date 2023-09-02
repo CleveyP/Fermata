@@ -1,10 +1,14 @@
 import "./about.css";
+import { useNavigate} from "react-router-dom";
 
 export const About = () =>{
 
+    let navigate = useNavigate();
 
     return (
+       
         <div className="about">
+             <button onClick={ () => {navigate("/home");}}>Home</button>
             <h1>About Fermata</h1>
             <hr />
             <h2>Site Description and Intended Useage</h2>
@@ -20,7 +24,7 @@ export const About = () =>{
             then the key signature that you should specify in AI mode is Eb as Eb is the relative major to C minor eg, C minor is enharmonic to Eb major<br/>
             <br/>
             The application also provides various synths and effects that allow for millions of permutations of instruments. In the next update, users will be able to<br/>
-            Provide sample MP3 files to create their own instruments. Currently, there are a few built in samples to choose from as well.
+            Provide sample MP3 files to create their own instruments. Currently, there are a few built in samples to choose from as well. <br/>
             There is a polyphany limit which will impose upon the composer a limit to the amount of pitches that can be played at the same time, <br/>
             and as different instruments and effects create different numbers of pitches per note, the maximum number of notes per beat will vary<br/>
             depending on the permutation of effects and instruments. Another performance consideration is that the tempo has been limited intentionally.<br/>
@@ -28,7 +32,7 @@ export const About = () =>{
              </p>
              <hr />
              <h2>How to Use Fermata</h2>
-            
+
 
         </div>
     )
