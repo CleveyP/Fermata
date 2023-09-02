@@ -32,6 +32,24 @@ mongoSession(app);
 app.use("/user", userRouter);
 app.use("/composition", compositionRouter);
 
+//NEW CHATGPT CODE:
+// Configure the Content-Type header for MP3 files
+app.use((req, res, next) => {
+  const filePath = path.join(__dirname, '../client/build', req.url);
+  if (filePath.endsWith('.mp3')) {
+    res.setHeader('Content-Type', 'audio/mpeg');
+  }
+  next();
+});
+//END NEW CHATGPT CODR
+
+
+
+
+
+
+
+
 // Serve static files from the React build directory
 app.use(express.static(path.join(__dirname, '../client/build')));
 
