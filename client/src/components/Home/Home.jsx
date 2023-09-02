@@ -105,6 +105,7 @@ export const Home = () =>{
                 <div className="nav-buttons">
                     <button onClick={handleLogout}>Logout</button>
                     <button onClick={() => {navigate(`/settings`)}}>Settings</button>
+                    <button onClick={() => {navigate('/about')}}>About</button>
                 </div>
             </header>
             <main>

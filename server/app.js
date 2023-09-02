@@ -21,10 +21,10 @@ let app = express();
 
 const router = express.Router();
 // app.use(express.json());
-app.use(bodyParser.json({limit: '1mb'}));
+app.use(bodyParser.json({limit: '1mb'})); //composition JSON sent between client and server are on the order of  n X 100KB 
 app.use(cors({
 	origin: true,
-	credentials: true
+	credentials: true  //for express session
 }));
 //connect the express session to the mongodb so the session is stored in the database not in the server memory.
 mongoSession(app);
@@ -33,7 +33,7 @@ app.use("/user", userRouter);
 app.use("/composition", compositionRouter);
 
 //NEW CHATGPT CODE:
-// Configure the Content-Type header for MP3 files
+// Configure the Content-Type header for MP3 files 
 app.use((req, res, next) => {
   const filePath = path.join(__dirname, '../client/build', req.url);
   if (filePath.endsWith('.mp3')) {
@@ -42,11 +42,6 @@ app.use((req, res, next) => {
   next();
 });
 //END NEW CHATGPT CODR
-
-
-
-
-
 
 
 

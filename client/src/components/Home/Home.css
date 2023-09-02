@@ -23,8 +23,9 @@ header{
 .nav-buttons {
 display: flex;
 flex-direction: row;
+flex-basis: content;
 height: 100%;
-width: 10%;
+/* width: 10%; */
 justify-content: space-between;
 align-items: center;
 }
