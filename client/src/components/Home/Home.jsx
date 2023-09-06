@@ -5,7 +5,8 @@ import Modal from 'react-modal';
 import { cookies } from "../../App";
 import axios from "axios";
 import { Piece } from "../../Classes/PieceClass";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {faPenToSquare} from "@fortawesome/free-solid-svg-icons";
 
 
 
@@ -20,9 +21,14 @@ export const Home = () =>{
     const [numberOfBars, setNumberOfBars] = useState(8);
     const navigate = useNavigate();
 
+
     //setup the username and the list of their songs
     useEffect(() =>{
-       
+        //if user somehow gets to /home page without logging in or registering, redirect them to the login page.
+        if(cookies.get("username") == undefined){
+            navigate("/");
+            return;
+        }
         //query compositionModel by username and get all of user's compositions
         const getSongs = async () =>{
              //get the username from universal cookie
@@ -44,13 +50,13 @@ export const Home = () =>{
     }
 
     const handleLogout = async () =>{
-        //delete the username cookie
-        //cookies.remove("username");
-        //transport user back to the login page
+       
+        //API will destroy the user's session
         const result =  await axios.get(`${process.env.REACT_APP_BACKEND_URL}/user/logout`,  {withCredentials: true});
         if(result.data.success){
             //delete the username cookie
             cookies.remove("username");
+             //transport user back to the login page
             navigate("/");
         }
         else
@@ -151,6 +157,10 @@ export const Home = () =>{
 }
 
 const SongList = (props) =>{
+    const [nameId, setNameId] = useState(0);
+    const [modalIsOpen, setIsOpen] = useState(false);
+    const [songName, setSongName] = useState("");
+
     const navigate = useNavigate();
 
     const handleDelete = async (e) =>{
@@ -159,6 +169,7 @@ const SongList = (props) =>{
         //trigger rerendering of the song list
         props.refresh();
     }
+
     //switch user to the edit view of the song that they clicked
     const handleClick = async (e) =>{
         //get the songId of the clicked song
@@ -168,23 +179,63 @@ const SongList = (props) =>{
         navigate(`/editComposition/${songId}`);
     }
 
+    const updateSongName = async (newName) =>{
+        const res = await axios.put(`${process.env.REACT_APP_BACKEND_URL}/composition/updateTitle`, {nameId: nameId, newName: newName, username: cookies.get("username") }, {withCredentials: true});
+        console.log(res.data);
+        if(res.data.success){
+            setIsOpen(false);
+            //trigger rerendering of the song list
+            props.refresh();
+        }
+        else{
+            alert(res.data.errorMessage);
+        }
+        
+    }
+
+    const handleSongNameChange = (e) =>{
+        setSongName(e.target.value);
+    }
+
 
     return (
         <div className = "song-list">
-            <h1>Your Songs:</h1>
-            <div className="songs-list">
-            {
-                props.songList.map((song) =>{
+            <h1>{(props.songList.length == 0) ? "Get started creating your masterpieces!" : "Your Songs:"}</h1>
+           
+           {props.songList.length != 0 && <div className="songs-list">
+            {   
+                props.songList.map((song, index) =>{
                     return (
-                    <div className = "song-item" >
-                        <p songid={song._id}  onClick={(e) => {handleClick(e)}}>{song.title}</p>
+                    <div className = "song-item" key={index}>
+                        <div className="name-and-edit">
+                            <p songid={song._id}  onClick={(e) => {handleClick(e)}}>{song.title}</p>
+                            <button className="update-name-btn" songid={song._id} onClick={(e) => { setNameId(e.currentTarget.getAttribute("songid")); setIsOpen(true)}}>
+                                <FontAwesomeIcon icon={faPenToSquare} />
+                            </button>
+                        </div>
+                       
                         <button songid={song._id} onClick={(e) => handleDelete(e)}>X</button>
                     </div>
                     );
                 })
             }
-            </div>
+            </div> }
 
+            {/* //-----------------------------------------------------MODAL------------------------------------------------------------ */}
+
+            <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={() => {setIsOpen(false)}}
+      >
+
+        <button onClick={() => {setIsOpen(false)}}>close</button>
+       <div className="modal-options">
+        Rename to: <input type="text" name="song-name" required onChange={(e) => {handleSongNameChange(e)}} value={songName} placeholder="New Song" />
+     
+        <button onClick= { () => {updateSongName(songName); }}>Rename</button>
+       </div>
+      </Modal>
+             {/* //-----------------------------------------------------END MODAL------------------------------------------------------------ */}
 
         </div>
     )

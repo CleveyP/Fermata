@@ -97,6 +97,27 @@ overflow-y: scroll;
     color: black;
 }
 
+.name-and-edit{
+    display: flex;
+    align-items: center;
+    height: 100%;
+    width: 30%;
+    justify-content:flex-start;
+}
+
+
+.song-item .update-name-btn{
+    border: none;
+    color: black;
+    background:transparent;
+}
+
+.song-item .update-name-btn:hover{
+    border: none;
+    color: red;
+    background:transparent;
+}
+
 main{
     height: 70vh;
 }

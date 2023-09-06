@@ -145,5 +145,34 @@ const deleteComposition = async (req, res) =>{
   }
 }
 
+const updateTitle = async (req, res) =>{
+  const songId = req.body.nameId;
+  const newTitle = req.body.newName;
+  const username = req.body.username;
 
-module.exports = {createNewComposition, getSongData, saveComposition,  getSongsByUsername, deleteComposition}
+  console.log("got new title: " + newTitle + " with song id " + songId);
+
+  //make sure that the name of the composition does not exist for that user.
+  let nameSearchResult = await CompositionsModel.findOne({author: username, title: newTitle});
+  if(nameSearchResult){
+    //there already exists a composition with that name by the same author
+    res.send({success: false, errorMessage: "You already have a song named " + newTitle + ". You must name all songs uniquely."});
+    return;
+  }
+  //get the composition document to be updated.
+  let compToUpdate = await CompositionsModel.findById(songId);
+  if(!compToUpdate){
+    res.send({success: false, errorMessage: "could not locate the original composition"});
+    return;
+  }
+  compToUpdate.set({title: newTitle});
+  const saveResult =  await compToUpdate.save();
+  if(saveResult)
+   res.send({success: true});
+ else
+   res.send({success: false, errorMessage: "could not save the updated document"});
+
+}
+
+
+module.exports = {createNewComposition, getSongData, saveComposition,  getSongsByUsername, deleteComposition, updateTitle}
