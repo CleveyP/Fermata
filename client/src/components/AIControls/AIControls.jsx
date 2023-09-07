@@ -32,7 +32,7 @@ export const AIControls = (props) =>{
         if(composition){
             return;
         }
-        console.log("got the composition object!");
+      
     }, [props.composition]);
 
 
@@ -52,7 +52,7 @@ export const AIControls = (props) =>{
                 </div>
                 <div>
                     <label htmlFor="selected-beat"> Selected Beat: </label>
-                    <input type="number" id="selected-beat-input" value={selectedBeat} onChange={(e) => {setSelectedBeat(e.target.value); console.log(e.target.value); props.setActiveBeat(Number(e.target.value))}}/>
+                    <input type="number" id="selected-beat-input" value={selectedBeat} onChange={(e) => {setSelectedBeat(e.target.value);  props.setActiveBeat(Number(e.target.value))}}/>
                 </div>
                
                 <fieldset>

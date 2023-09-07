@@ -280,7 +280,7 @@ onerror: (error) => {
 
 
 //take in teh composition and apply the tempo, syths and effects. Play the composition.
-export const playSong = async (composition, bpm, trebleSynth, bassSynth, effectsArrays, eq, setActiveBeat, attRelObj) => {
+export const playSong = async (composition, bpm, trebleSynth, bassSynth, effectsArrays, eq, setActiveBeat, attRelObj, startingBeat) => {
     //if the trebleSynth or bassSynth are samples then:
     let trebleSample;
     let bassSample;
@@ -288,7 +288,7 @@ export const playSong = async (composition, bpm, trebleSynth, bassSynth, effects
     if(trebleSynth.substring(0, 6) === "SAMPLE"){
       //load the grand piano
       try{
-	console.log("trying to load sample");
+	
         trebleSample =  await createSampler(trebleSynth);
         trebleSample.release = attRelObj.treble.rel;
         trebleSample.attack=attRelObj.treble.att;
@@ -300,7 +300,7 @@ export const playSong = async (composition, bpm, trebleSynth, bassSynth, effects
     }
 
     if(bassSynth.substring(0, 6) === "SAMPLE"){
-      //load the grand piano
+      //load the sample
       try{
       bassSample =  await createSampler(bassSynth);
       bassSample.release = attRelObj.bass.rel;
@@ -405,7 +405,6 @@ export const playSong = async (composition, bpm, trebleSynth, bassSynth, effects
           break;
     }
     if((trebleSynth.substring(0, 6) !== "SAMPLE")){
-      console.log(" the substring is " + trebleSynth.substring(0,6));
       //apply the attack release sustain that the user set to the treble synth
       treblePoly.options.envelope.attack = Number(attRelObj.treble.att);
       treblePoly.options.envelope.release = attRelObj.treble.rel;
@@ -483,7 +482,8 @@ export const playSong = async (composition, bpm, trebleSynth, bassSynth, effects
     //  }
      
     
-
+    //adjust the currentChordIndex to whatever was passed in
+    currentChordIndex = startingBeat;
     //if we have played through the whole song, start at the beginning. 
     currentChordIndex =  (currentChordIndex >= trebleArray.length) ? 0 : currentChordIndex;
     //play every chord with an offset from start time of what number chord is current Ex: now +  3rdchord (chord == 2) = now + 2 beats.

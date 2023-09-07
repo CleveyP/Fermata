@@ -161,7 +161,8 @@ export const Composition = (props) => {
                   [trebleEffects, bassEffects],
                   [trebleVolume, bassVolume],
                   setActiveBeat,
-                  attRel
+                  attRel,
+                  activeBeat
                 );
               } else {
                 setIsPaused(true);
@@ -194,6 +195,10 @@ export const Composition = (props) => {
               step="1"
               value={bpm}
               onChange={handleBpmChange}
+            />
+           Current Beat: <input id="starting-beat-input" type="number" value={activeBeat} onChange={(e) =>{
+              setActiveBeat(Number(e.target.value));
+            }}
             />
           </div>
         </div>

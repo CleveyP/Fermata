@@ -13,7 +13,7 @@ import {faPenToSquare} from "@fortawesome/free-solid-svg-icons";
 export const Home = () =>{
     const [refreshSongList, setRefreshSongList] = useState(false);
     const [username, setUsername] = useState("");
-    const [songList, setSongList] = useState([]); //array of { songId: ,  title: }
+    const [songList, setSongList] = useState([]); //array of { songId: ,  title: , date: }
     const [modalIsOpen, setIsOpen] = useState(false);
     //modal selections
     const [timeSignature, setTimeSignature] = useState("44");
@@ -205,6 +205,14 @@ const SongList = (props) =>{
            {props.songList.length != 0 && <div className="songs-list">
             {   
                 props.songList.map((song, index) =>{
+                   let formattedDate = ""; 
+                   if(song.date){ 
+                   const currentDate = song.date;
+                   
+                    //formattedDate looks like Month/day/year format : 00/00/0000
+                   formattedDate =  (Number(currentDate.month) + 1).toString()  + "/" + currentDate.day + "/" + currentDate.year;
+                   }
+                   
                     return (
                     <div className = "song-item" key={index}>
                         <div className="name-and-edit">
@@ -213,7 +221,7 @@ const SongList = (props) =>{
                                 <FontAwesomeIcon icon={faPenToSquare} />
                             </button>
                         </div>
-                       
+                        <p className="date-paragraph">{formattedDate}</p>
                         <button songid={song._id} onClick={(e) => handleDelete(e)}>X</button>
                     </div>
                     );

@@ -59,6 +59,8 @@ img {
 
 .bpm-box {
   display: flex;
+  justify-content: space-around;
+  align-items: center;
 }
 
 .playback-controls {
@@ -70,6 +72,12 @@ img {
   align-items: baseline;
   background-color: burlywood;
   border: 3px solid black;
+}
+
+#starting-beat-input{
+  width: 15%;
+  height: 30%;
+  background-color:yellow;
 }
 
 .playback-button {

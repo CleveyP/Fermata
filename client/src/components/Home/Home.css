@@ -118,6 +118,30 @@ overflow-y: scroll;
     background:transparent;
 }
 
+.song-item .date-paragraph{
+    text-decoration:none;
+}
+
+.song-item .date-paragraph:hover{
+    color: black;
+}
+
 main{
     height: 70vh;
 }
+
+@media screen and (max-width: 750px) {
+
+.songs-list{
+    width: 100%;
+    margin: 0;
+}
+}
+
+
+@media screen and (max-width: 300px) {
+
+    .song-item .date-paragraph{
+        display: none;
+    }
+    }

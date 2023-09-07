@@ -8,7 +8,10 @@ const createNewComposition = async (req, res) =>{
     const timeSig = req.body.timeSignature;
     const username = req.body.username;
     const compositionArray = req.body.compositionArray;
-
+    //get the current date 
+    const creationDate = new Date();
+    const dateObject = {month: creationDate.getMonth(), year: creationDate.getFullYear(), day: creationDate.getDate()};
+   const millis = Date.now();
   //make sure that the name of the composition does not exist for that user.
   let nameSearchResult = await CompositionsModel.findOne({author: username, title: songName});
   if(nameSearchResult){
@@ -17,12 +20,13 @@ const createNewComposition = async (req, res) =>{
     return;
   }
 
-
     //generate new id for the song 
     //put the song in the CompositionModel in the db
     try {
         let newComposition = await CompositionsModel.create({
           title: songName,
+          date: dateObject,
+          millis: millis,
           numBars: numBars,
           timeSignature: timeSig,
           author: username,
@@ -80,15 +84,14 @@ const getSongsByUsername = async (req, res) =>{
   //get the compositions titles and songIds that were made by the username user
 
 const authorQuery = { author: username }; 
-const fieldsToInclude = "_id title";
+const fieldsToInclude = "_id title date";
 
-const result = await CompositionsModel.find(authorQuery, fieldsToInclude).sort({ _id: -1 });
+const result = await CompositionsModel.find(authorQuery, fieldsToInclude).sort({ millis: -1 }); //sort the songs based on creation date
   if (!result) {
     console.error("Error executing the query:");
     res.send({success: false});
   } else {
-    console.log("Result:", result);
-    res.send({success: true, songsList: result})
+    res.send({success: true, songsList: result});
   }
 }
 
@@ -98,13 +101,18 @@ const saveComposition = async (req, res) =>{
   const compositionArray = req.body.composition;
   //get the songId from req
   const songId = req.body.songId;
+ //get the current date 
+ const creationDate = new Date();
+ const dateObject = {month: creationDate.getMonth(), year: creationDate.getFullYear(), day: creationDate.getDate()};
+ const millis = Date.now();
+
   //update the compositionModel's jsonArray where  _songId ==  songId 
   let compToUpdate = await CompositionsModel.findById(songId);
   if(!compToUpdate){
     res.send({success: false});
     return;
   }
-  compToUpdate.set({compositionArray: compositionArray});
+  compToUpdate.set({compositionArray: compositionArray, date: dateObject, millis: millis});
   compToUpdate.set({
     bpm: req.body.bpm,
     trebleSynth: req.body.trebleSynth,

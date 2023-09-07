@@ -7,6 +7,15 @@ const CompositionsSchema = new Schema({
         required: true,
 
     },
+
+    date: {
+        type: Object
+    },
+
+    millis: {
+        type: Number
+    },
+
     numBars: {
         type: Number,
         required: true,
